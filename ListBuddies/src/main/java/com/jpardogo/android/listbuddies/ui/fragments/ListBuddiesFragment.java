@@ -3,11 +3,13 @@ package com.jpardogo.android.listbuddies.ui.fragments;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.jpardogo.android.listbuddies.R;
 import com.jpardogo.android.listbuddies.adapters.CircularLoopAdapater;
@@ -15,18 +17,24 @@ import com.jpardogo.android.listbuddies.provider.ImagesUrls;
 import com.jpardogo.android.listbuddies.widgets.ObservableListView;
 
 
-public class ListBuddiesFragment extends Fragment implements View.OnTouchListener, AdapterView.OnItemClickListener, ObservableListView.ListViewObserverDelegate {
+public class ListBuddiesFragment extends Fragment  implements View.OnTouchListener,AdapterView.OnItemClickListener,ObservableListView.ListViewObserverDelegate {
 
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
-    /**Controll the distance that the list will scroll per timer tick period*/
-    private static final int SCROLL_DISTANCE = 5;
-    /**Period between the timer ticks*/
+    /**
+     * Controll the distance that the list will scroll per timer tick period
+     */
+    private static final int SCROLL_DISTANCE = 2;
+    /**
+     * Period between the timer ticks
+     */
     private final int mScrollPeriod = 50;
 
-    /**When user click the list or scroll but finish the scroll stopping it at the end then we need to detect
+    /**
+     * When user click the list or scroll but finish the scroll stopping it at the end then we need to detect
      * this behavior to start the autoscroll again. A range from -1.0 to 1.0 is anough to detect that the list
-     * is stop at the end of the interaction so we need to start it again*/
+     * is stop at the end of the interaction so we need to start it again
+     */
     private static final double MAX_RANGE_CLICK = 1.0;
     private static final double MIN_RANGE_CLICK = -1.0;
 
@@ -34,19 +42,29 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
     private ObservableListView mListView_left;
     private ObservableListView mListView_right;
 
-    /**Adapter that will loop through the list items again and again*/
+    /**
+     * Adapter that will loop through the list items again and again
+     */
     private CircularLoopAdapater mAdapter;
 
-    /**Time that the timer willl run - 300 000 000 years scrolling will be enough to make an infinite auto-scroll*/
+    /**
+     * Time that the timer willl run - 300 000 000 years scrolling will be enough to make an infinite auto-scroll
+     */
     private long mTotalScrollTime = Long.MAX_VALUE;
 
-    /**Flag that detects if the user is touching the screen*/
+    /**
+     * Flag that detects if the user is touching the screen
+     */
     private boolean mActionDown = true;
 
-    /**Amount of pixel scrolled for the user on the Y axe*/
+    /**
+     * Amount of pixel scrolled for the user on the Y axe
+     */
     private float mDeltaY;
 
-    /**Flag that control a double call to the timer, in case the timer is running it is true, false otherwise*/
+    /**
+     * Flag that control a double call to the timer, in case the timer is running it is true, false otherwise
+     */
     private boolean timerRunning = false;
 
 
@@ -70,11 +88,13 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
         //Need to start list in the middle to make it infinite
         mListView_left.setSelection(Integer.MAX_VALUE / 2);
         mListView_left.setOnTouchListener(this);
+        mListView_left.setOnItemClickListener(this);
         mListView_left.setObserver(this);
 
         //Need to start list in the middle to make it infinite
         mListView_right.setSelection(Integer.MAX_VALUE / 2);
         mListView_right.setOnTouchListener(this);
+        mListView_right .setOnItemClickListener(this);
         mListView_right.setObserver(this);
 
         //Start auto-scroll
@@ -95,24 +115,14 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
     }
 
 
-    /**Starts timer for both lists*/
+    /**
+     * Starts timer for both lists
+     */
     private void startAutoScroll() {
 
         if (!timerRunning) {
             timerRunning = true;
-            mListView_left.post(new Runnable() {
-                @Override
-                public void run() {
-                    mAutoScrollTimer.start();
-                }
-            });
-
-            mListView_right.post(new Runnable() {
-                @Override
-                public void run() {
-                    mAutoScrollTimer.start();
-                }
-            });
+            mAutoScrollTimer.start();
         }
 
 
@@ -126,21 +136,17 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
 
 
         public void onTick(long millisUntilFinished) {
-
-            mListView_left.smoothScrollBy(SCROLL_DISTANCE, mScrollPeriod);
-            mListView_right.smoothScrollBy(SCROLL_DISTANCE / 2, mScrollPeriod);
+            Log.d(TAG, "mAutoScrollTimer - onTick");
+            mListView_left.smoothScrollBy(SCROLL_DISTANCE, 0);
+            mListView_right.smoothScrollBy(SCROLL_DISTANCE / 2, 0);
         }
 
         public void onFinish() {
-
+            Log.d(TAG, "mAutoScrollTimer - onFinish");
         }
 
     };
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-    }
 
 
     /**
@@ -151,6 +157,7 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mActionDown = true;
@@ -172,19 +179,21 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
         return false;
     }
 
-    /**Check if a number is inside a range*/
+    /**
+     * Check if a number is inside a range
+     */
     private boolean between(float x, double min, double max) {
         return x >= min && x <= max;
     }
 
     /**
-     * Starts the auto scroll when the Y value is cero , so the scroll is not moving
-     * @param deltaY
+     * Callback for our ListViewObserver informing of the distance scrolled
+     * @param deltaY - distance scrolled
      */
     @Override
     public void onScroll(float deltaY) {
 
-        //Sabe delta in global variable to use it on onTouch
+//    Sabe delta in global variable to use it on onTouch
         mDeltaY = deltaY;
         if (mDeltaY == 0 && !mActionDown) {
             startAutoScroll();
@@ -192,4 +201,9 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
 
     }
 
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_LONG).show();
+    }
 }

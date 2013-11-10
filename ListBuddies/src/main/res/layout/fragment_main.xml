@@ -14,12 +14,16 @@
         android:id="@+id/list_left"
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:drawSelectorOnTop="true"
+        android:listSelector="@drawable/kikat_selector"
         android:layout_height="match_parent"
         android:layout_marginRight="1dp"/>
 
     <com.jpardogo.android.listbuddies.widgets.ObservableListView
         android:id="@+id/list_right"
         android:layout_width="0dp"
+        android:drawSelectorOnTop="true"
+        android:listSelector="@drawable/kikat_selector"
         android:layout_weight="1"
         android:layout_height="match_parent" />
 
