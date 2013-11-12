@@ -72,6 +72,7 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
 
     private boolean isRightListEnabled = true;
     private boolean isLeftListEnabled = true;
+    private int mLastViewTouchId;
 
     public ListBuddiesFragment() {
     }
@@ -182,7 +183,6 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
 
 
         public void onTick(long millisUntilFinished) {
-            Log.d(TAG, "mAutoScrollTimer - onTick");
             mListView_left.smoothScrollBy(SCROLL_DISTANCE, 0);
             mListView_right.smoothScrollBy(SCROLL_DISTANCE / 2, 0);
         }
@@ -205,10 +205,17 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
     public boolean onTouch(View v, MotionEvent event) {
 
         switch (event.getAction()) {
+
             case MotionEvent.ACTION_DOWN:
                 mActionDown = true;
+
+                //Select the enable ListView
+                toogleListView(v);
+
+                mLastViewTouchId = v.getId();
                 stopAutoscroll();
                 break;
+
             case MotionEvent.ACTION_UP:
                 mActionDown = false;
 
@@ -223,6 +230,18 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
         }
 
         return false;
+    }
+
+    /**
+     * Each time we touch the opposite ListView than the last one we have selected
+     * we need to activate is as the enable one
+     * @param v
+     */
+    private void toogleListView(View v) {
+        if (v.getId() != mLastViewTouchId) {
+            isLeftListEnabled = !isLeftListEnabled;
+            isRightListEnabled = !isRightListEnabled;
+        }
     }
 
     /**
@@ -270,5 +289,12 @@ public class ListBuddiesFragment extends Fragment implements View.OnTouchListene
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_LONG).show();
         onListScroll((View) view.getParent(), 0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //stop timer before we leave
+        stopAutoscroll();
     }
 }
