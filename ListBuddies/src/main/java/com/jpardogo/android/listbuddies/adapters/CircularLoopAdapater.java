@@ -34,7 +34,6 @@ public class CircularLoopAdapater extends ArrayAdapter<String> {
      * @param imageUrls - array of url string of different images
      */
     private void initArray(String[] imageUrls) {
-        int max = imageUrls.length;
         for(String s: imageUrls){
             mItems.add(s);
         }
@@ -75,8 +74,7 @@ public class CircularLoopAdapater extends ArrayAdapter<String> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.image.setImageBitmap(null);
-        Picasso.with(mContext).load(getItem(position)).into(holder.image);
+        Picasso.with(mContext).load(getItem(position)).placeholder(R.drawable.empty_photo).into(holder.image);
 
         return convertView;
     }

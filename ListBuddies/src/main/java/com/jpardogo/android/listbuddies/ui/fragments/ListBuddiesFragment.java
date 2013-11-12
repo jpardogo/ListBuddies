@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.jpardogo.android.listbuddies.R;
@@ -17,14 +19,14 @@ import com.jpardogo.android.listbuddies.provider.ImagesUrls;
 import com.jpardogo.android.listbuddies.widgets.ObservableListView;
 
 
-public class ListBuddiesFragment extends Fragment  implements View.OnTouchListener,AdapterView.OnItemClickListener,ObservableListView.ListViewObserverDelegate {
+public class ListBuddiesFragment extends Fragment implements View.OnTouchListener, AdapterView.OnItemClickListener, ObservableListView.ListViewObserverDelegate {
 
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
     /**
      * Controll the distance that the list will scroll per timer tick period
      */
-    private static final int SCROLL_DISTANCE = 2;
+    private static final int SCROLL_DISTANCE = 5;
     /**
      * Period between the timer ticks
      */
@@ -68,6 +70,9 @@ public class ListBuddiesFragment extends Fragment  implements View.OnTouchListen
     private boolean timerRunning = false;
 
 
+    private boolean isRightListEnabled = true;
+    private boolean isLeftListEnabled = true;
+
     public ListBuddiesFragment() {
     }
 
@@ -90,12 +95,53 @@ public class ListBuddiesFragment extends Fragment  implements View.OnTouchListen
         mListView_left.setOnTouchListener(this);
         mListView_left.setOnItemClickListener(this);
         mListView_left.setObserver(this);
+        mListView_left.setOnScrollListener(new AbsListView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // onListScroll will be called for both list when they scroll to make
+                // scroll the other one so we need to avoid the infite loop setting the list
+                // that is enable on the moment of the scroll
+                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+                    //The user is scrolling using touch, and their finger is still on the screen
+                    isLeftListEnabled = false;
+                } else if (scrollState == SCROLL_STATE_IDLE) {
+                    //The view is not scrolling.
+                    isLeftListEnabled = true;
+                    onListScroll(mListView_left, 0);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                                 int totalItemCount) {
+            }
+        });
 
         //Need to start list in the middle to make it infinite
         mListView_right.setSelection(Integer.MAX_VALUE / 2);
         mListView_right.setOnTouchListener(this);
-        mListView_right .setOnItemClickListener(this);
+        mListView_right.setOnItemClickListener(this);
         mListView_right.setObserver(this);
+
+        mListView_right.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+                    //The user is scrolling using touch, and their finger is still on the screen
+                    isRightListEnabled = false;
+                } else if (scrollState == SCROLL_STATE_IDLE) {
+                    //The view is not scrolling.
+                    isRightListEnabled = true;
+                    onListScroll(mListView_right, 0);
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                                 int totalItemCount) {
+            }
+        });
 
         //Start auto-scroll
         startAutoScroll();
@@ -148,9 +194,9 @@ public class ListBuddiesFragment extends Fragment  implements View.OnTouchListen
     };
 
 
-
     /**
      * Detect when the user touch any of the lists
+     *
      * @param v
      * @param event
      * @return
@@ -167,10 +213,10 @@ public class ListBuddiesFragment extends Fragment  implements View.OnTouchListen
                 mActionDown = false;
 
                 //mDelta is really small means that the user either clicked or scroll but finish stopping the scroll
-                // and the scroll is no moving anymore so onScroll won´t be called and we have to force another
+                // and the scroll is no moving anymore so onListScroll won´t be called and we have to force another
                 // call to start the auto-scroll again.
-                if (between(mDeltaY,MIN_RANGE_CLICK, MAX_RANGE_CLICK)) {
-                    onScroll(0);
+                if (between(mDeltaY, MIN_RANGE_CLICK, MAX_RANGE_CLICK)) {
+                    onListScroll(v, 0);
                 }
                 break;
 
@@ -182,21 +228,39 @@ public class ListBuddiesFragment extends Fragment  implements View.OnTouchListen
     /**
      * Check if a number is inside a range
      */
-    private boolean between(float x, double min, double max) {
-        return x >= min && x <= max;
+    private boolean between(float deltaY, double min, double max) {
+        return deltaY >= min && deltaY <= max;
     }
 
     /**
      * Callback for our ListViewObserver informing of the distance scrolled
+     *
      * @param deltaY - distance scrolled
      */
     @Override
-    public void onScroll(float deltaY) {
+    public void onListScroll(View view, float deltaY) {
 
-//    Sabe delta in global variable to use it on onTouch
+        ListView listView = (ListView) view;
+        //Sabe delta in global variable to use it on onTouch
         mDeltaY = deltaY;
-        if (mDeltaY == 0 && !mActionDown) {
+
+
+        if (mDeltaY == 0 && !mActionDown && isLeftListEnabled && isRightListEnabled) {
             startAutoScroll();
+        } else {
+
+
+            //Make the other list scroll half speed in one case or double in the other
+            // so we achieve the parallax effect
+
+            if (listView.getId() == mListView_left.getId() && !isLeftListEnabled) {
+                mListView_right.smoothScrollBy((int) -deltaY / 2, 0);
+
+            } else if (listView.getId() == mListView_right.getId() && !isRightListEnabled) {
+
+                mListView_left.smoothScrollBy((int) -deltaY * 2, 0);
+
+            }
         }
 
     }
@@ -205,5 +269,6 @@ public class ListBuddiesFragment extends Fragment  implements View.OnTouchListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_LONG).show();
+        onListScroll((View) view.getParent(), 0);
     }
 }

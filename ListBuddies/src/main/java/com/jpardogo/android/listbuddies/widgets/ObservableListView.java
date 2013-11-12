@@ -10,6 +10,7 @@ import android.widget.ListView;
  */
 public class ObservableListView extends ListView {
 
+    private static final String TAG = ObservableListView.class.getSimpleName();
     /**
      * Delegate for the callback to the fragment/activity that the ListView is in
      */
@@ -32,7 +33,7 @@ public class ObservableListView extends ListView {
     }
 
     public static interface ListViewObserverDelegate {
-        public void onScroll(float deltaY);
+        public void onListScroll(View view, float deltaY);
     }
 
 
@@ -45,35 +46,58 @@ public class ObservableListView extends ListView {
     }
 
     /**
-     *  Track one of the children (row) and follow its vertical position change.
+     *  Calculate the scroll distance comparing the distance with the top of the list of the current
+     *  child and the last one tracked
      *
      * @param l - Current horizontal scroll origin.
      * @param t - Current vertical scroll origin.
      * @param oldl - Previous horizontal scroll origin.
      * @param oldt - Previous vertical scroll origin.
      */
+    private float OldDeltaY;
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
 
+
         if (mTrackedChild == null) {
+
+            //We want to continue scrolling the list when we dont find a valid child
+            // so we use the last value of deltaY
+            mObserver.onListScroll(this, OldDeltaY);
+
             if (getChildCount() > 0) {
                 mTrackedChild = getChildInTheMiddle();
                 mTrackedChildPrevTop = mTrackedChild.getTop();
                 mTrackedChildPrevPosition = getPositionForView(mTrackedChild);
             }
         } else {
+
             boolean childIsSafeToTrack = mTrackedChild.getParent() == this && getPositionForView(mTrackedChild) == mTrackedChildPrevPosition;
             if (childIsSafeToTrack) {
                 int top = mTrackedChild.getTop();
                 if (mObserver != null) {
                     float deltaY = top - mTrackedChildPrevTop;
-                    mObserver.onScroll(deltaY);
+
+                    if (deltaY == 0) {
+                        //When we scroll so fast the list this value becomes 0 all the time
+                        // so we dont want the other list stop, and we give it the last
+                        //no 0 value we have
+                        deltaY = OldDeltaY;
+                    } else {
+                        OldDeltaY = deltaY;
+                    }
+
+                    mObserver.onListScroll(this, deltaY);
+
                 }
                 mTrackedChildPrevTop = top;
             } else {
                 mTrackedChild = null;
             }
         }
+
+
     }
 }
