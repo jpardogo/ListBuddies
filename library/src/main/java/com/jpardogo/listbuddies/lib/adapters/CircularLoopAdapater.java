@@ -1,0 +1,37 @@
+package com.jpardogo.listbuddies.lib.adapters;
+
+import android.widget.BaseAdapter;
+
+public abstract class CircularLoopAdapater extends BaseAdapter {
+    private static final String TAG = CircularLoopAdapater.class.getSimpleName();
+
+    /**
+     * In getCount(), if we return Integer.MAX_VALUE, it will give you about 2 billion items,
+     * which should be enough to look like infinite.
+     * <p/>
+     * We can see the answer to the question on here where Romain Guy confirm this solution:
+     * <p/>
+     * http://stackoverflow.com/questions/2332847/how-to-create-a-closed-circular-listview
+     */
+    @Override
+    public int getCount() {
+        return Integer.MAX_VALUE;
+    }
+
+    protected abstract int getCircularCount();
+
+    /**
+     * Gets the position that correspond to the position in the amount of items we actually have
+     *
+     * @param position - position of the item in the list
+     * @return - position that we actually wanna take from our list
+     */
+    protected int getCircularPosition(int position) {
+        return position % getCircularCount();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+}

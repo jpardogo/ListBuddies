@@ -1,1 +1,1 @@
-include ':ListBuddies'
+include ':library', 'example'
