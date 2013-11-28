@@ -5,7 +5,81 @@ Android library of a pair of auto-scroll circular parallax ListViews like the on
 
 A video example of this library is on this [youtube video][1].
 
-This project is on going. I would appreciate any kind of help. Thanks
+THIS PROJECT IS UNDER DEVELOPMENT. I would appreciate any kind of help. Thanks
+
+Usage
+-----
+
+You must declare the following view in you on your xml layout:
+
+```xml
+<com.jpardogo.listbuddies.lib.views.ListBuddiesLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listbuddies"
+    android:layout_width="match_parent"
+    android:drawSelectorOnTop="true"
+    android:layout_height="match_parent"
+    android:layout_marginRight="1dp" />
+```
+This `LinerLayout` contains two ListViews. 
+So we need to set the adapters of the ListViews calling `listBuddies.setAdapters(adapter1,adapter2)`. 
+```java
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ListBuddiesLayout listBuddies = (ListBuddiesLayout) rootView.findViewById(R.id.listbuddies);
+        CircularAdapter adapter = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.image_size1), ImagesUrls.imageUrls_left);
+        CircularAdapter adapter2 = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.image_size2), ImagesUrls.imageUrls_right);
+        listBuddies.setAdapters(adapter, adapter2);
+        return rootView;
+    }
+```
+
+Both adapters need to be extend from `CircularLoopAdapter`. With minimal differences from a BaseAdapter.
+
+```java
+    public class CircularAdapter extends CircularLoopAdapter
+```
+The first different is that the adapter needs to `@Override getCircularCount` instead of `getCount`.
+
+```java
+    @Override
+    protected int getCircularCount() {
+        return mItems.size();
+    }
+```
+
+and instead of get the value of `position` to get the item from the list. We need to get the position calling `getCircularPosition(position)`, like this:
+
+```java
+    @Override
+    public String getItem(int position) {
+        return mItems.get(getCircularPosition(position));
+    }
+```
+
+To receive the callback for the click on the items of the lists, Just call `setOnItemClickListener` on your `ListBuddiesLayout` view and pass and instance of `OnBuddyItemClickListener`.
+
+```java
+public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener
+```
+....
+
+```java
+listBuddies.setOnItemClickListener(this);
+```
+You will receive the OnItemClick callback in `onBuddyItemClicked` which is similar to `onItemClick` but indicate with the parameter `int buddy` in which of the lists the item clicked is contained.
+if the value of `buddy` is 0 the item is on the first list (left) and if it is 1 is on the second list (right).
+
+```java
+@Override
+    public void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id) {
+          //int buddy indicate the list where the item is contain.
+          // 0 - left
+          // 1 - right
+    }
+````
 
 Developed By
 --------------------
