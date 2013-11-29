@@ -5,6 +5,10 @@ Android library of a pair of auto-scroll circular parallax ListViews like the on
 
 A video example of this library is on this [youtube video][1].
 
+<p align="center">
+ <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/screenshot_listbuddies_1.png"/>
+</p>
+
 THIS PROJECT IS UNDER DEVELOPMENT. I would appreciate any kind of help. Thanks
 
 Usage
@@ -18,8 +22,7 @@ You must declare the following view in you on your xml layout:
     android:id="@+id/listbuddies"
     android:layout_width="match_parent"
     android:drawSelectorOnTop="true"
-    android:layout_height="match_parent"
-    android:layout_marginRight="1dp" />
+    android:layout_height="match_parent"/>
 ```
 This `LinerLayout` contains two ListViews. 
 So we need to set the adapters of the ListViews calling `listBuddies.setAdapters(adapter1,adapter2)`. 
@@ -88,15 +91,15 @@ Javier Pardo de Santayana Gómez - <jpardogo@gmail.com>
 
 <a href="https://twitter.com/jpardogo">
   <img alt="Follow me on Twitter"
-       src="https://raw.github.com/ManuelPeinado/NumericPageIndicator/master/art/twitter.png" />
+       src="https://raw.github.com/jpardogo/ListBuddies/master/art/ic_twitter.png" />
 </a>
 <a href="https://plus.google.com/u/0/+JavierPardo/posts">
   <img alt="Follow me on Google+"
-       src="https://raw.github.com/ManuelPeinado/NumericPageIndicator/master/art/google-plus.png" />
+       src="https://raw.github.com/jpardogo/ListBuddies/master/art/ic_google+.png" />
 </a>
 <a href="http://www.linkedin.com/profile/view?id=155395637">
   <img alt="Follow me on LinkedIn"
-       src="https://raw.github.com/ManuelPeinado/NumericPageIndicator/master/art/linkedin.png" />
+       src="https://raw.github.com/jpardogo/ListBuddies/master/art/ic_linkedin.png" />
 
 License
 -----------
