@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.jpardogo.listbuddies.lib.R;
-import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapater;
+import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapter;
 
 public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListener, ObservableListView.ListViewObserverDelegate {
 
@@ -133,7 +133,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         startAutoScroll();
     }
 
-    public void setAdapters(CircularLoopAdapater adapter, CircularLoopAdapater adapter2) {
+    public void setAdapters(CircularLoopAdapter adapter, CircularLoopAdapter adapter2) {
         mListViewLeft.setAdapter(adapter);
         mListViewRight.setAdapter(adapter2);
         mListViewLeft.setSelection(Integer.MAX_VALUE / 2);

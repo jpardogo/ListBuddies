@@ -2,6 +2,4 @@
     android:id="@+id/listbuddies"
     android:layout_width="match_parent"
     android:drawSelectorOnTop="true"
-    android:listSelector="@drawable/kikat_selector"
-    android:layout_height="match_parent"
-    android:layout_marginRight="1dp" />
+    android:layout_height="match_parent" />

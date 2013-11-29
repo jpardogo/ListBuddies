@@ -15,7 +15,7 @@ import com.jpardogo.android.listbuddies.provider.ImagesUrls;
 import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
 
 
-public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
+public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener, AdapterView.OnItemClickListener {
 
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
@@ -41,4 +41,8 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
 }

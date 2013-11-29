@@ -2,8 +2,8 @@ package com.jpardogo.listbuddies.lib.adapters;
 
 import android.widget.BaseAdapter;
 
-public abstract class CircularLoopAdapater extends BaseAdapter {
-    private static final String TAG = CircularLoopAdapater.class.getSimpleName();
+public abstract class CircularLoopAdapter extends BaseAdapter {
+    private static final String TAG = CircularLoopAdapter.class.getSimpleName();
 
     /**
      * In getCount(), if we return Integer.MAX_VALUE, it will give you about 2 billion items,

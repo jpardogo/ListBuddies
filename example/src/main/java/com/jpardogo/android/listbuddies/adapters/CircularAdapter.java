@@ -8,13 +8,13 @@ import android.widget.ImageView;
 
 import com.jpardogo.android.listbuddies.R;
 import com.jpardogo.android.listbuddies.Utils.ScaleToFitWidhtHeigthTransform;
-import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapater;
+import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CircularAdapter extends CircularLoopAdapater {
+public class CircularAdapter extends CircularLoopAdapter {
 
     private static final String TAG = CircularAdapter.class.getSimpleName();
 
