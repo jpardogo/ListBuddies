@@ -227,10 +227,14 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
      * @param v - The ListView touched
      */
     private void toogleListView(View v) {
-        if (v.getId() != mLastViewTouchId) {
-            isLeftListEnabled = !isLeftListEnabled;
-            isRightListEnabled = !isRightListEnabled;
-
+        if (mLastViewTouchId != v.getId()) {
+            if (mLastViewTouchId == mListViewLeft.getId()) {
+                isLeftListEnabled = true;
+                isRightListEnabled = false;
+            } else {
+                isLeftListEnabled = false;
+                isRightListEnabled = true;
+            }
         }
     }
 
