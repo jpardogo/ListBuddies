@@ -82,9 +82,6 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         mListViewRight = (ObservableListView) findViewById(R.id.list_right);
         //Initialize with a default list as last touched
         mLastViewTouchId = mListViewRight.getId();
-        //Init listeners for the listView´s items Click callbacks
-        mListViewLeft.setOnItemClickListener(OnBuddyClicked);
-        mListViewRight.setOnItemClickListener(OnBuddyClicked);
 
         mListViewLeft.setOnTouchListener(this);
         mListViewLeft.setObserver(this);
@@ -134,10 +131,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
             }
         });
 
-        //Starts scroll when the layout gets created.
-        startAutoScroll();
     }
-
     /**
      * Sets the adapters of both ListView son the ListBuddiesLayout.
      *
@@ -200,11 +194,17 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
                 if (mDownView != null) {
                     //Always change the state of the item pressed after release the finger form the screen.
                     mDownView.setPressed(false);
-
-                    //Only in case action was a single tap (user didnt scroll after selected the list item)
-                    // we need to perform this click.
-                    list.performItemClick(mDownView, mDownPosition, mDownView.getId());
-
+                    if (mItemBuddyListener != null) {
+                        //ListId of the list where the item was selected
+                        int buddy = list.getId() == mListViewLeft.getId() ? 0 : 1;
+                        //Only in case action was a single tap (user didnt scroll after selected the list item)
+                        // we need to perform this click (callback to the activity).
+                        //Send the number of the list where the item was clicked
+                        mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, mDownPosition, mDownView.getId());
+                        //Start again the scroll,
+                        // In case this click on the item start another screen it will be handle on onVisibilityChanged
+                        startAutoScroll();
+                    }
                 }
 
                 break;
@@ -248,8 +248,8 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     /**
      * Receives the distance scroll on listView.
      *
-     * @param view
-     * @param deltaY
+     * @param view - view scrolled
+     * @param deltaY - Y distance scrolles
      */
     @Override
     public void onListScroll(View view, float deltaY) {
@@ -327,22 +327,22 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         mItemBuddyListener = listener;
     }
 
-
-    private AdapterView.OnItemClickListener OnBuddyClicked = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (mItemBuddyListener != null) {
-                //Send the number of the list where the item was clicked
-                int buddy = parent.getId() == mListViewLeft.getId() ? 0 : 1;
-                //Callback with all the information (list selected and position in it)
-                mItemBuddyListener.onBuddyItemClicked(parent, view, buddy, position, id);
-            }
-        }
-    };
-
-
     public interface OnBuddyItemClickListener {
         //Buddy corresponde with the list that the itemclick correspond to 0 for the left one, 1 for the right one
         void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id);
+    }
+
+    /**
+     * In case the view is not visible the timer must stop,
+     * and in case it comes to the foreground again we want to start the scrolling again
+     */
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == View.INVISIBLE) {
+            stopAutoscroll();
+        } else {
+            startAutoScroll();
+        }
     }
 }

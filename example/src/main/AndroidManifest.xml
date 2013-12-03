@@ -31,6 +31,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.ExampleActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name" />
+
     </application>
 
 </manifest>

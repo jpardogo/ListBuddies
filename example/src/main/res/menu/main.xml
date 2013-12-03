@@ -1,4 +1,9 @@
-<menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+        android:id="@+id/item1"
+        android:showAsAction="ifRoom"
+        android:title="Start Activity OnItemClick"
+        android:checkable="true" />
 </menu>
