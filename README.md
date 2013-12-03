@@ -118,4 +118,4 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
     
-[1]: http://www.youtube.com/watch?v=-AWwboC-lis
+[1]: http://youtu.be/6L7t_5mYTgM
