@@ -10,16 +10,15 @@
         android:id="@+id/list_left"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:drawSelectorOnTop="true"
+        android:listSelector="@android:color/transparent"
         android:layout_height="match_parent"
         android:layout_marginRight="1dp" />
 
     <com.jpardogo.listbuddies.lib.views.ObservableListView
         android:id="@+id/list_right"
         android:layout_width="0dp"
-        android:drawSelectorOnTop="true"
         android:layout_weight="1"
+        android:listSelector="@android:color/transparent"
         android:layout_height="match_parent" />
-
 
 </merge>

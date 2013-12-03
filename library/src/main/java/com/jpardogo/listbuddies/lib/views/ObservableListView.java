@@ -5,6 +5,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
+/**
+ * ListView that notify the through a listener about the Y distance that was scrolled.
+ */
 public class ObservableListView extends ListView {
 
     private static final String TAG = ObservableListView.class.getSimpleName();

@@ -2,6 +2,9 @@ package com.jpardogo.listbuddies.lib.adapters;
 
 import android.widget.BaseAdapter;
 
+/**
+ * Adapter that allows the list to loop over the same items again and again creating a loop.
+ */
 public abstract class CircularLoopAdapter extends BaseAdapter {
     private static final String TAG = CircularLoopAdapter.class.getSimpleName();
 
@@ -34,4 +37,5 @@ public abstract class CircularLoopAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
+
 }
