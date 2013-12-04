@@ -132,6 +132,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         });
 
     }
+
     /**
      * Sets the adapters of both ListView son the ListBuddiesLayout.
      *
@@ -248,7 +249,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     /**
      * Receives the distance scroll on listView.
      *
-     * @param view - view scrolled
+     * @param view   - view scrolled
      * @param deltaY - Y distance scrolles
      */
     @Override
@@ -294,7 +295,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
      * Timer that will be call each {@link mScrollPeriod} to scroll {@link SCROLL_DISTANCE}*
      * during {@link mTotalScrollTime}
      */
-    private final CountDownTimer mAutoScrollTimer = new CountDownTimer(mTotalScrollTime, mScrollPeriod) {
+    private CountDownTimer mAutoScrollTimer = new CountDownTimer(mTotalScrollTime, mScrollPeriod) {
         public void onTick(long millisUntilFinished) {
             mListViewLeft.smoothScrollBy(SCROLL_DISTANCE, 0);
             mListViewRight.smoothScrollBy(SCROLL_DISTANCE / 2, 0);
@@ -344,5 +345,12 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         } else {
             startAutoScroll();
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mAutoScrollTimer.cancel();
+        mAutoScrollTimer = null;
     }
 }
