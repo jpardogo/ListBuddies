@@ -21,7 +21,6 @@ You must declare the following view in you on your xml layout:
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/listbuddies"
     android:layout_width="match_parent"
-    android:drawSelectorOnTop="true"
     android:layout_height="match_parent"/>
 ```
 This `LinerLayout` contains two ListViews. 
