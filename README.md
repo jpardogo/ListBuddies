@@ -9,7 +9,7 @@ A video example of this library is on this [youtube video][1].
  <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/screenshot_listbuddies_1.png"/>
 </p>
 
-THIS PROJECT IS UNDER DEVELOPMENT. I would appreciate any kind of help. Thanks
+I would appreciate any kind of help to improve this library. Thanks
 
 Usage
 -----
@@ -82,6 +82,39 @@ if the value of `buddy` is 0 the item is on the first list (left) and if it is 1
           // 1 - right
     }
 ````
+
+In order to receive touch feedback for the click of the list items, we need to have as a parent of our list item view one of the following layouts:
+
+`com.jpardogo.listbuddies.lib.views.containers.FrameLayoutFeedback`
+`com.jpardogo.listbuddies.lib.views.containers.RelativeLayoutFeedBack`
+`com.jpardogo.listbuddies.lib.views.containers.LinearLayoutFeedBack`
+
+This layouts have `selectorColor` property to define the color of the selector for the feedback. 
+
+```xml
+<com.jpardogo.listbuddies.lib.views.containers.FrameLayoutFeedback 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:listbuddies="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    listbuddies:selectorColor="@color/red_transp">
+    
+    .....
+```
+
+The color will need some transparency in order to act as the ListView selector:
+
+```xml
+<color name="red_transp">#77FF0000</color>
+````
+
+Although it is just optional.
+
+TODO
+--------------------
+
+- ListView handle the touch feedback of its views.
+
 
 Developed By
 --------------------
