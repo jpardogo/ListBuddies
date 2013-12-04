@@ -7,22 +7,22 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import com.jpardogo.listbuddies.lib.R;
 
 /**
  * RelativeLayout with a touch feedback color as overlay.
  */
-public class LinearLayoutFeedback extends LinearLayout {
+public class FrameLayoutFeedback extends FrameLayout {
 
     private StateListDrawable touchFeedbackDrawable;
 
-    public LinearLayoutFeedback(Context context) {
+    public FrameLayoutFeedback(Context context) {
         super(context);
     }
 
-    public LinearLayoutFeedback(Context context, AttributeSet attrs) {
+    public FrameLayoutFeedback(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.SelectorOptions, 0, 0);
@@ -37,7 +37,7 @@ public class LinearLayoutFeedback extends LinearLayout {
 
     }
 
-    public LinearLayoutFeedback(Context context, AttributeSet attrs, int defStyle) {
+    public FrameLayoutFeedback(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
 

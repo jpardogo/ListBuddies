@@ -1,8 +1,10 @@
 package com.jpardogo.listbuddies.lib.views.containers;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -14,7 +16,7 @@ import com.jpardogo.listbuddies.lib.R;
  */
 public class RelativeLayoutFeedback extends RelativeLayout {
 
-    private Drawable touchFeedbackDrawable;
+    private StateListDrawable touchFeedbackDrawable;
 
     public RelativeLayoutFeedback(Context context) {
         super(context);
@@ -22,18 +24,23 @@ public class RelativeLayoutFeedback extends RelativeLayout {
 
     public RelativeLayoutFeedback(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.SelectorOptions, 0, 0);
+        touchFeedbackDrawable = new StateListDrawable();
+        touchFeedbackDrawable.addState(
+                new int[]{android.R.attr.state_pressed},
+                new ColorDrawable(
+                        a.getColor(R.styleable.SelectorOptions_selectorColor,
+                                android.R.color.holo_blue_light)
+                )
+        );
+
     }
 
     public RelativeLayoutFeedback(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-    }
 
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        //TODO make the color of the drawable variable passong it as a xml parameter
-        touchFeedbackDrawable = getResources().getDrawable(R.drawable.touch_selector);
     }
 
     @Override
@@ -48,8 +55,10 @@ public class RelativeLayoutFeedback extends RelativeLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        touchFeedbackDrawable.setBounds(0, 0, getWidth(), getHeight());
-        touchFeedbackDrawable.draw(canvas);
+        if (touchFeedbackDrawable != null) {
+            touchFeedbackDrawable.setBounds(0, 0, getWidth(), getHeight());
+            touchFeedbackDrawable.draw(canvas);
+        }
     }
 
     @Override
