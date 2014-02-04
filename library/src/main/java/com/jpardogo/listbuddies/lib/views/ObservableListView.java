@@ -63,7 +63,7 @@ public class ObservableListView extends ListView {
 
         if (mTrackedChild == null) {
 
-            //We want to continue scrolling the list when we dont find a valid child
+            //We want to continue scrolling the list when we don't find a valid child
             // so we use the last value of deltaY
             mObserver.onListScroll(this, OldDeltaY);
 
@@ -82,7 +82,7 @@ public class ObservableListView extends ListView {
 
                     if (deltaY == 0) {
                         //When we scroll so fast the list this value becomes 0 all the time
-                        // so we dont want the other list stop, and we give it the last
+                        // so we don't want the other list stop, and we give it the last
                         //no 0 value we have
                         deltaY = OldDeltaY;
                     } else {

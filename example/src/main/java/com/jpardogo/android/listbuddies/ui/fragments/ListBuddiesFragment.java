@@ -21,10 +21,9 @@ import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
 
 
 public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
-
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
-    private MenuItem mCheckeableMenuItem;
+    private MenuItem mStartActivityOnItemClick;
 
     public ListBuddiesFragment() {
     }
@@ -49,9 +48,7 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
 
     @Override
     public void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id) {
-        //Playing with these to pieces of code we can see the behaviour of listbuddies when we start another activity
-        //and when we dont.
-        if (mCheckeableMenuItem.isChecked()) {
+        if (mStartActivityOnItemClick.isChecked()) {
             Intent intent = new Intent(getActivity(), ExampleActivity.class);
             startActivity(intent);
         } else {
@@ -64,7 +61,7 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        mCheckeableMenuItem = menu.findItem(R.id.item1);
+        mStartActivityOnItemClick = menu.findItem(R.id.item1);
     }
 
 

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class CircularAdapter extends CircularLoopAdapter {
-
     private static final String TAG = CircularAdapter.class.getSimpleName();
 
     private ArrayList<String> mItems = new ArrayList<String>();
@@ -28,11 +27,6 @@ public class CircularAdapter extends CircularLoopAdapter {
         initArray(imagesUrl);
     }
 
-    /**
-     * Init array with the images urls
-     *
-     * @param imageUrls - array of url string of different images
-     */
     private void initArray(String[] imageUrls) {
         mItems.clear();
         Collections.addAll(mItems, imageUrls);
@@ -67,7 +61,6 @@ public class CircularAdapter extends CircularLoopAdapter {
         return convertView;
     }
 
-
     static class ViewHolder {
         ImageView image;
 
@@ -75,6 +68,4 @@ public class CircularAdapter extends CircularLoopAdapter {
             image = (ImageView) convertView.findViewById(R.id.image);
         }
     }
-
-
 }

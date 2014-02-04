@@ -5,18 +5,23 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '17.0.0'
+
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 19
+        versionName rootProject.versionName
+        versionCode rootProject.versionCode
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
     }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.0.0'
+    compile libraries.android_support
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile 'com.squareup.picasso:picasso:2.1.1'
     compile project(':library')
 }
+
+

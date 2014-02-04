@@ -2,9 +2,8 @@ package com.jpardogo.listbuddies.lib.views;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.CountDownTimer;
+import android.support.v4.widget.AutoScrollHelper;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,63 +14,34 @@ import android.widget.ListView;
 
 import com.jpardogo.listbuddies.lib.R;
 import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapter;
+import com.jpardogo.listbuddies.lib.helpers.ListBuddiesAutoScrollHelper;
 
 /**
  * LinerLayout that contains 2 ListViews. This ListViews auto-scroll while the user is not interacting with them.
- * When the user interact with one pf the ListViews these created a parallax effect due they are connected.
+ * When the user interact with one of the ListViews a parrallax effect is created during its scroll.
  */
 public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListener, ObservableListView.ListViewObserverDelegate {
 
     private static final String TAG = ListBuddiesLayout.class.getSimpleName();
+    private static final long PRESS_DELAY = 100;
+    private static final float CANCEL_CLICK_LIMIT = 8;
 
-    /**
-     * Click listener callback
-     */
     private OnBuddyItemClickListener mItemBuddyListener;
-
-    /**
-     * Controll the distance that the list will scroll per timer tick period
-     */
     private static final int SCROLL_DISTANCE = 2;
-
-    /**
-     * Period between the timer ticks
-     */
-    private final int mScrollPeriod = 10;
-
+    private int[] mListViewCoords = new int[2];
+    private int mLastViewTouchId;
+    private int mDownPosition;
+    private int mChildCount;
+    private float mDownEventY;
     private ObservableListView mListViewLeft;
     private ObservableListView mListViewRight;
-
-    /**
-     * Time that the timer willl run - 300 000 000 years scrolling will be enough to make an infinite auto-scroll
-     */
-    private long mTotalScrollTime = Long.MAX_VALUE;
-
-    /**
-     * Flag that detects if the user is touching the screen
-     */
-    private boolean mActionDown = true;
-
-    /**
-     * Amount of pixel scrolled for the user on the Y axe
-     */
-    private float mDeltaY;
-
-    /**
-     * Flag that control a double call to the timer, in case the timer is running it is true, false otherwise
-     */
-    private boolean timerRunning = false;
-
-    /**
-     * 2 flags that avoid the scroll in both directions at the same time when we scroll one of the listviews.
-     */
+    private boolean mActionDown;
     private boolean isRightListEnabled = false;
     private boolean isLeftListEnabled = false;
-
-    /**
-     * Parameter for the last listview that we interacted with.
-     */
-    private int mLastViewTouchId;
+    private boolean isUserInteracting = true;
+    private View mDownView;
+    private Rect mRect = new Rect();
+    private ListBuddiesAutoScrollHelper mScrollHelper;
 
 
     public ListBuddiesLayout(Context context, AttributeSet attrs) {
@@ -80,48 +50,31 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         LayoutInflater.from(context).inflate(R.layout.listbuddies, this, true);
         mListViewLeft = (ObservableListView) findViewById(R.id.list_left);
         mListViewRight = (ObservableListView) findViewById(R.id.list_right);
-        //Initialize with a default list as last touched
         mLastViewTouchId = mListViewRight.getId();
-
         mListViewLeft.setOnTouchListener(this);
         mListViewLeft.setObserver(this);
-        mListViewLeft.setOnScrollListener(new AbsListView.OnScrollListener() {
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
-                // Because the left list scrolls the right when it scrolls.
-                // And the left scrolls the right one when it scrolls. To avoid an infinite loop between them we
-                // need 2 flag that avoid the scroll in both directions at the same time.
-                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                    //The user is scrolling the left list using touch, and their finger is still on the screen
-                    isLeftListEnabled = false;
-                } else if (scrollState == SCROLL_STATE_IDLE) {
-                    //The view is not scrolling.
-                    isLeftListEnabled = true;
-                    onListScroll(view, 0);
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-                                 int totalItemCount) {
-            }
-        });
-
+        setOnListScrollListener(mListViewLeft, true);
         mListViewRight.setOnTouchListener(this);
         mListViewRight.setObserver(this);
-        mListViewRight.setOnScrollListener(new AbsListView.OnScrollListener() {
+        setOnListScrollListener(mListViewRight, false);
+        setScrollHelpers();
+        startAutoScroll();
+    }
+
+    private void setOnListScrollListener(ObservableListView list, final boolean isLeftList) {
+        list.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+            public void onScrollStateChanged(AbsListView view, int state) {
+                switch (state) {
+                    case SCROLL_STATE_IDLE:
+                        setListState(true, isLeftList);
+                        forceScrollIfNeeded(isOtherListEnable(isLeftList));
+                        break;
 
-                if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-                    //The user is scrolling the right list using touch, and their finger is still on the screen
-                    isRightListEnabled = false;
-                } else if (scrollState == SCROLL_STATE_IDLE) {
-
-                    //The view is not scrolling.
-                    isRightListEnabled = true;
-                    onListScroll(view, 0);
+                    case SCROLL_STATE_TOUCH_SCROLL:
+                        setListState(false, isLeftList);
+                        isUserInteracting = true;
+                        break;
                 }
             }
 
@@ -130,187 +83,183 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
                                  int totalItemCount) {
             }
         });
-
     }
 
-    /**
-     * Sets the adapters of both ListView son the ListBuddiesLayout.
-     *
-     * @param adapter  - adapter for the left list
-     * @param adapter2 - adapter for the right list
-     */
+    private boolean isOtherListEnable(boolean isLeftList) {
+        boolean result;
+        if(isLeftList){
+            result=isRightListEnabled;
+        }else{
+            result=isLeftListEnabled;
+        }
+        return result;
+    }
+
+
+    private void setScrollHelpers() {
+        mScrollHelper = new ListBuddiesAutoScrollHelper(mListViewLeft) {
+            @Override
+            public void scrollTargetBy(int deltaX, int deltaY) {
+                mListViewLeft.smoothScrollBy(SCROLL_DISTANCE, 0);
+                mListViewRight.smoothScrollBy(SCROLL_DISTANCE / 2, 0);
+            }
+
+            @Override
+            public boolean canTargetScrollHorizontally(int i) {
+                return false;
+            }
+
+            @Override
+            public boolean canTargetScrollVertically(int i) {
+                return true;
+            }
+        };
+
+        mScrollHelper.setEnabled(true);
+        mScrollHelper.setEdgeType(AutoScrollHelper.EDGE_TYPE_OUTSIDE);
+    }
+
+    private void setListState(boolean isEnabled, boolean isLeftList) {
+        if (isLeftList) {
+            isLeftListEnabled = isEnabled;
+        } else {
+            isRightListEnabled = isEnabled;
+        }
+    }
+
+    private void startAutoScroll() {
+        mListViewLeft.post(new Runnable() {
+            @Override
+            public void run() {
+                forceScroll();
+            }
+        });
+    }
+
+    private void forceScrollIfNeeded(boolean isListEnabled) {
+        if (isUserInteracting && isListEnabled) {
+            isUserInteracting = false;
+            if (!mActionDown) {
+                forceScroll();
+            }
+        }
+    }
+
     public void setAdapters(CircularLoopAdapter adapter, CircularLoopAdapter adapter2) {
         mListViewLeft.setAdapter(adapter);
         mListViewRight.setAdapter(adapter2);
         mListViewLeft.setSelection(Integer.MAX_VALUE / 2);
         mListViewRight.setSelection(Integer.MAX_VALUE / 2);
-
     }
-
-    //The viewItem touch on the ListView
-    private View mDownView;
-    /**
-     * The position of my {@link mDownView}
-     */
-    private int mDownPosition;
-    // Area use to detect the boundaries of the item clicked
-    private Rect mRect = new Rect();
-    //The number of children in the group.
-    private int mChildCount;
-    //Coordenates on of the screen in the screen
-    private int[] mListViewCoords = new int[2];
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         ListView list = (ListView) v;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                //Stopped the timer so the lsit stop scrolling
-                stopAutoscroll();
-                //Activate flag advising the aciton down started
-                mActionDown = true;
-                //Select the enable ListView
-                toogleListView(v);
-                //Save the id of the last listview touch
-                mLastViewTouchId = v.getId();
-                //Due problems with click a item in an auto scroll list, we need to
-                //handle the click manually
-                finsItemListClicked(event, list);
-                //In case the item has been found we get its position on the list and set it state to pressed
-                if (mDownView != null) {
-                    mDownPosition = list.getPositionForView(mDownView);
-                    //It would be much better to activate the press stated of the list item with its default
-                    // selector but I could find a way to change it so I need a custom layout and change the
-                    // stated of the item itself with my own selector
-                    mDownView.setPressed(true);
-                }
+                actionDown(list,event);
                 break;
-
             case MotionEvent.ACTION_UP:
-                ////Activate flag advising the finger is not touching the screen anymore
-                mActionDown = false;
-                //mDelta is really small means that the user either clicked or scroll but finish stopping the scroll
-                // and the scroll is no moving anymore so onListScroll won´t be called and we have to force another
-                // call to start the auto-scroll again.
-                if (mDownView != null) {
-                    //Always change the state of the item pressed after release the finger form the screen.
-                    mDownView.setPressed(false);
-                    if (mItemBuddyListener != null) {
-                        //ListId of the list where the item was selected
-                        int buddy = list.getId() == mListViewLeft.getId() ? 0 : 1;
-                        //Only in case action was a single tap (user didnt scroll after selected the list item)
-                        // we need to perform this click (callback to the activity).
-                        //Send the number of the list where the item was clicked
-                        mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, mDownPosition, mDownView.getId());
-                        //Start again the scroll,
-                        // In case this click on the item start another screen it will be handle on onVisibilityChanged
-                        startAutoScroll();
-                    }
-                }
-
+                actionUp(list);
                 break;
             case MotionEvent.ACTION_MOVE:
-                //Cancel click and set new state of the view selected when list scroll again
-                if (mDownView != null) {
-                    mDownView.setPressed(false);
-                    mDownView = null;
-                }
+                actionMove(event);
                 break;
         }
-        return false;
+        return mScrollHelper.onTouch(v, event);
     }
 
-    /**
-     * Finds the item clicked on a ListView using the coordinates of a motion event.
-     *
-     * @param event - MotionEvent of the finger of the screen
-     * @param list  - list where we want to find the item clicked
-     */
-    private void finsItemListClicked(MotionEvent event, ListView list) {
+    private void actionDown(ListView list, MotionEvent event) {
+        mActionDown = true;
+        toogleListView(list);
+        mLastViewTouchId = list.getId();
+        startClickSelection(event, list, event.getY());
+    }
+
+    private void actionUp(ListView list) {
+        mActionDown = false;
+        performClick(list);
+    }
+
+    private void actionMove(MotionEvent event) {
+        cancelClick(event.getY());
+    }
+
+    private void cancelClick(float eventY) {
+        if (mDownView != null && (Math.abs(mDownEventY - eventY) > CANCEL_CLICK_LIMIT)) {
+            mDownView.setPressed(false);
+            mDownView = null;
+        }
+    }
+
+    private void performClick(ListView list) {
+        if (mDownView != null && isUserInteracting) {
+            mDownView.setPressed(false);
+            if (mItemBuddyListener != null) {
+                int buddy = list.getId() == mListViewLeft.getId() ? 0 : 1;
+                mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, mDownPosition, mDownView.getId());
+            }
+        }
+    }
+
+    private void startClickSelection(MotionEvent event, ListView list, float eventY) {
+        if (!isUserInteracting) {
+            findViewClicked(event, eventY, list);
+
+            setSelectorPressed(list);
+        }
+    }
+
+    private void findViewClicked(MotionEvent event, float eventY, ListView list) {
         mChildCount = list.getChildCount();
         mListViewCoords = new int[2];
         list.getLocationOnScreen(mListViewCoords);
-        //X click point coordenate
         int x = (int) event.getRawX() - mListViewCoords[0];
-        //Y click point coordenate
         int y = (int) event.getRawY() - mListViewCoords[1];
         View child;
         for (int i = 0; i < mChildCount; i++) {
             child = list.getChildAt(i);
             child.getHitRect(mRect);
-            //If the rec contains the click coordenate, we found our onItemclick
             if (mRect.contains(x, y)) {
-                mDownView = child; // This is your down view
+                mDownView = child;
+                mDownEventY = eventY;
                 break;
             }
         }
     }
 
+    private void setSelectorPressed(ListView list) {
+        if (mDownView != null) {
+            mDownPosition = list.getPositionForView(mDownView);
+            mDownView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isUserInteracting) {
+                        if (mDownView != null) {
+                            mDownView.setPressed(true);
+                        }
+                    }
+                }
+            }, PRESS_DELAY);
+        }
+    }
+
     /**
      * Receives the distance scroll on listView.
-     *
-     * @param view   - view scrolled
-     * @param deltaY - Y distance scrolles
      */
     @Override
     public void onListScroll(View view, float deltaY) {
-        ListView listView = (ListView) view;
-        //Sabe delta in global variable to use it on onTouch
-        mDeltaY = deltaY;
-        if (mDeltaY == 0 && !mActionDown && isLeftListEnabled && isRightListEnabled) {
-            startAutoScroll();
-        } else {
-            //Make the other list scroll half speed in one case or double in the other
-            // so we achieve the parallax effect
-            if (listView.getId() == mListViewLeft.getId() && !isLeftListEnabled) {
-                mListViewRight.smoothScrollBy((int) -deltaY / 2, 0);
+        if (view.getId() == mListViewLeft.getId() && !isLeftListEnabled) {
+            mListViewRight.smoothScrollBy((int) -deltaY / 2, 0);
 
-            } else if (listView.getId() == mListViewRight.getId() && !isRightListEnabled) {
-                mListViewLeft.smoothScrollBy((int) -deltaY * 2, 0);
-            }
+        } else if (view.getId() == mListViewRight.getId() && !isRightListEnabled) {
+            mListViewLeft.smoothScrollBy((int) -deltaY * 2, 0);
         }
     }
-
-    /**
-     * Stops the timer that manage the auto-scroll in case it is running
-     */
-    private void stopAutoscroll() {
-        if (timerRunning) {
-            timerRunning = false;
-            mAutoScrollTimer.cancel();
-        }
-    }
-
-    /**
-     * Starts timer for both lists
-     */
-    private void startAutoScroll() {
-        if (!timerRunning) {
-            timerRunning = true;
-            mAutoScrollTimer.start();
-        }
-    }
-
-    /**
-     * Timer that will be call each {@link mScrollPeriod} to scroll {@link SCROLL_DISTANCE}*
-     * during {@link mTotalScrollTime}
-     */
-    private CountDownTimer mAutoScrollTimer = new CountDownTimer(mTotalScrollTime, mScrollPeriod) {
-        public void onTick(long millisUntilFinished) {
-            mListViewLeft.smoothScrollBy(SCROLL_DISTANCE, 0);
-            mListViewRight.smoothScrollBy(SCROLL_DISTANCE / 2, 0);
-        }
-
-        public void onFinish() {
-            Log.d(TAG, "mAutoScrollTimer - onFinish");
-        }
-    };
 
     /**
      * Each time we touch the opposite ListView than the last one we have selected
-     * we need to activate iT as the enable one
-     *
-     * @param v - The ListView touched
+     * we need to activate it as the enable one
      */
     private void toogleListView(View v) {
         if (mLastViewTouchId != v.getId()) {
@@ -329,28 +278,12 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     }
 
     public interface OnBuddyItemClickListener {
-        //Buddy corresponde with the list that the itemclick correspond to 0 for the left one, 1 for the right one
+        //Buddy corresponde with the list (0-left, 1-right)
         void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id);
     }
 
-    /**
-     * In case the view is not visible the timer must stop,
-     * and in case it comes to the foreground again we want to start the scrolling again
-     */
-    @Override
-    protected void onVisibilityChanged(View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if (visibility == View.INVISIBLE) {
-            stopAutoscroll();
-        } else {
-            startAutoScroll();
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mAutoScrollTimer.cancel();
-        mAutoScrollTimer = null;
+    private void forceScroll() {
+        MotionEvent event = MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis(), MotionEvent.ACTION_MOVE, 570, -1, 0);
+        mScrollHelper.onTouch(mListViewLeft, event);
     }
 }
