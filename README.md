@@ -97,7 +97,7 @@ This layouts have `selectorColor` property to define the color of the selector f
     xmlns:listbuddies="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    listbuddies:selectorColor="@color/red_transp">
+    listbuddies:selectorColor="@color/blue">
     
     .....
 ```
@@ -105,15 +105,10 @@ This layouts have `selectorColor` property to define the color of the selector f
 The color will need some transparency in order to act as the ListView selector:
 
 ```xml
-<color name="red_transp">#77FF0000</color>
+<color name="blue">#7733B5E5</color>
 ````
 
 Although it is just optional.
-
-TODO
---------------------
-
-- ListView handle the touch feedback of its views.
 
 
 Developed By
