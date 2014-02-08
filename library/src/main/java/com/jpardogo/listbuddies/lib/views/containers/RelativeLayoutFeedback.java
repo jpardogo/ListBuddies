@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -26,15 +27,24 @@ public class RelativeLayoutFeedback extends RelativeLayout {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.SelectorOptions, 0, 0);
+        setSelector(a);
+
+    }
+
+
+    private void setSelector(TypedArray a) {
         touchFeedbackDrawable = new StateListDrawable();
         touchFeedbackDrawable.addState(
                 new int[]{android.R.attr.state_pressed},
-                new ColorDrawable(
-                        a.getColor(R.styleable.SelectorOptions_selectorColor,
-                                android.R.color.holo_blue_light)
-                )
+                getColor(a)
         );
+    }
 
+    private Drawable getColor(TypedArray a) {
+        return new ColorDrawable(
+                a.getColor(R.styleable.SelectorOptions_selectorColor,
+                        android.R.color.darker_gray)
+        );
     }
 
     public RelativeLayoutFeedback(Context context, AttributeSet attrs, int defStyle) {
