@@ -23,6 +23,34 @@ You must declare the following view in you on your xml layout:
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
 ```
+
+There are a bunch of optional custom attributes on the layout:
+
+```xml
+<com.jpardogo.listbuddies.lib.views.ListBuddiesLayout
+        xmlns:listbuddies="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/listbuddies"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        listbuddies:speed="2"
+        listbuddies:gap="@dimen/gap"
+        listbuddies:fillGap="@color/frame"
+        listbuddies:listsDivider="@drawable/divider"
+        listbuddies:listsDividerHeight="@dimen/divider_height"
+        listbuddies:autoScrollFaster="left"
+        listbuddies:scrollFaster="left"/>
+```
+
+######Attributes
+
+* speed: the auto scroll speed (integer). 0 - no autoScroll
+* gap: space between the lists, the default gap is 3dp (@dimen/default_margin_between_lists).
+* fillGap: defines the color of the gap, if it is not set the gap is transparent
+* listDivider: Defines the lists dividers.
+* listsDividerHeight: Divider´s height.
+* autoScrollFaster: Indicate the ListView that will be faster on the parrallax effect during autoScroll. right/left.
+* scrollFaster: Indicate the ListView that will be faster on the parrallax effect during manual scroll. right/left.
+
 This `LinerLayout` contains two ListViews. 
 So we need to set the adapters of the ListViews calling `listBuddies.setAdapters(adapter1,adapter2)`. 
 ```java
