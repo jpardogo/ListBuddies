@@ -14,6 +14,7 @@ ext.versionName="1.0"
 ext.versionCode=1
 ext.minSdkVersion=10
 ext.targetSdkVersion=19
+ext.abortOnError=false
 
 ext.libraries = [
         android_support: 'com.android.support:support-v4:19.0.0'

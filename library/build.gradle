@@ -9,6 +9,12 @@ android {
     compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
+    android {
+        lintOptions {
+            abortOnError rootProject.abortOnError
+        }
+    }
+
     defaultConfig {
         versionName rootProject.versionName
         versionCode rootProject.versionCode
