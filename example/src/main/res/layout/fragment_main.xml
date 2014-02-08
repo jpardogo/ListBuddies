@@ -1,5 +1,30 @@
-<com.jpardogo.listbuddies.lib.views.ListBuddiesLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listbuddies"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:drawSelectorOnTop="true"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/santander"
+        android:scaleType="centerCrop"/>
+
+    <com.jpardogo.listbuddies.lib.views.ListBuddiesLayout
+        xmlns:listbuddies="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/listbuddies"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        listbuddies:speed="2"
+        listbuddies:gap="@dimen/gap"
+        listbuddies:listsDivider="@drawable/divider"
+        listbuddies:listsDividerHeight="@dimen/divider_height"
+        listbuddies:fillGap="@color/frame"
+        listbuddies:autoScrollFaster="left"
+        listbuddies:scrollFaster="left"/>
+        <!--autoScrollFaster - left/right-->
+        <!--scrollFaster - left/right-->
+
+    <View android:layout_width="match_parent"
+        android:layout_height="@dimen/divider_height"
+        android:background="@color/frame"/>
+</FrameLayout>

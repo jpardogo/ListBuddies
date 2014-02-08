@@ -4,5 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="item_height_small">150dp</dimen>
     <dimen name="item_height_tall">220dp</dimen>
+    <dimen name="gap">3dp</dimen>
+    <dimen name="divider_height">@dimen/gap</dimen>
 
 </resources>
