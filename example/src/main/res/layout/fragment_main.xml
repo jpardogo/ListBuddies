@@ -19,10 +19,8 @@
         listbuddies:listsDivider="@drawable/divider"
         listbuddies:listsDividerHeight="@dimen/divider_height"
         listbuddies:fillGap="@color/frame"
-        listbuddies:autoScrollFaster="left"
+        listbuddies:autoScrollFaster="right"
         listbuddies:scrollFaster="left"/>
-        <!--autoScrollFaster - left/right-->
-        <!--scrollFaster - left/right-->
 
     <View android:layout_width="match_parent"
         android:layout_height="@dimen/divider_height"

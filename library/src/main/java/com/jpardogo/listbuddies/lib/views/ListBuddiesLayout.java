@@ -75,8 +75,9 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListBuddiesOptions, 0, 0);
         mGap = a.getDimensionPixelSize(R.styleable.ListBuddiesOptions_gap, getResources().getDimensionPixelSize(R.dimen.default_margin_between_lists));
         mSpeed = a.getInteger(R.styleable.ListBuddiesOptions_speed, DEFAULT_SPEED);
-        isAutoScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_autoScrollFaster,1)==1;
-        isScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster,1)==1;
+        int scrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_autoScrollFaster,1);
+        isAutoScrollLeftListFaster = scrollLeftListFaster==1;
+        isScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster,scrollLeftListFaster)==1;
         calibrateSpeed();
         mDivider = a.getDrawable(R.styleable.ListBuddiesOptions_listsDivider);
         mDividerHeight = a.getDimensionPixelSize(R.styleable.ListBuddiesOptions_listsDividerHeight, ATTR_NOT_SET);
