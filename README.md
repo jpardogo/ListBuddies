@@ -37,7 +37,7 @@ There are a bunch of optional custom attributes on the layout:
         listbuddies:fillGap="@color/frame"
         listbuddies:listsDivider="@drawable/divider"
         listbuddies:listsDividerHeight="@dimen/divider_height"
-        listbuddies:autoScrollFaster="left"
+        listbuddies:autoScrollFaster="right"
         listbuddies:scrollFaster="left"/>
 ```
 
