@@ -1,29 +1,22 @@
 apply plugin: 'android-library'
 
-repositories {
-    mavenCentral()
-}
-
-android {
-
-    compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
-
-    android {
-        lintOptions {
-            abortOnError rootProject.abortOnError
-        }
-    }
+android{
+    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        versionName rootProject.versionName
-        versionCode rootProject.versionCode
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        minSdkVersion Integer.parseInt(project.ANDROID_BUILD_MIN_SDK_VERSION)
+        targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
+        versionName project.VERSION_NAME
+        versionCode Integer.parseInt(project.VERSION_CODE)
+    }
+
+    lintOptions {
+        abortOnError Boolean.parseBoolean(project.ABORT_ON_ERROR)
     }
 }
 
-dependencies {
+dependencies{
     compile libraries.android_support
 }
 

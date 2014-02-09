@@ -8,13 +8,15 @@ buildscript {
     }
 }
 
-ext.compileSdkVersion=19
-ext.buildToolsVersion="19.0.1"
-ext.versionName="1.0"
-ext.versionCode=1
-ext.minSdkVersion=10
-ext.targetSdkVersion=19
-ext.abortOnError=false
+
+allprojects {
+    version = VERSION_NAME
+    group = GROUP
+
+    repositories {
+        mavenCentral()
+    }
+}
 
 ext.libraries = [
         android_support: 'com.android.support:support-v4:19.0.0'
