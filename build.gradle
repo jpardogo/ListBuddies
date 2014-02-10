@@ -21,3 +21,5 @@ allprojects {
 ext.libraries = [
         android_support: 'com.android.support:support-v4:19.0.0'
 ]
+
+apply plugin: 'android-reporting'
