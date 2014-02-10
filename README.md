@@ -156,6 +156,11 @@ Javier Pardo de Santayana Gómez - <jpardogo@gmail.com>
   <img alt="Follow me on LinkedIn"
        src="https://raw.github.com/jpardogo/ListBuddies/master/art/ic_linkedin.png" />
 
+TODO
+----
+
+* Push aar to maven central: I am having an issue with it, so it would be awesome if anybody can help. I posted the issue on [here](2). Thanks
+
 License
 -----------
 
@@ -174,3 +179,4 @@ License
     limitations under the License.
     
 [1]: http://youtu.be/6L7t_5mYTgM
+[2]: http://goo.gl/rR0TkY
