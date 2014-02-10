@@ -159,7 +159,7 @@ Javier Pardo de Santayana Gómez - <jpardogo@gmail.com>
 TODO
 ----
 
-* Push aar to maven central: I am having an issue with it, so it would be awesome if anybody can help. I posted the issue on [here](2). Thanks
+* Push aar to maven central: I am having an issue with it, so it would be awesome if anybody can help. I posted the issue on [here][2]. Thanks
 
 License
 -----------
