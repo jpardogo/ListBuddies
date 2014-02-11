@@ -1,5 +1,14 @@
 apply plugin: 'android'
 
+repositories {
+    mavenCentral()
+    // To use a development snapshot version of the plugin, add the
+    // Sonatype Snapshots repository.
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
 android {
 
     compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
@@ -29,7 +38,7 @@ dependencies {
     compile libraries.android_support
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile 'com.squareup.picasso:picasso:2.1.1'
-    compile project(':library')
+    compile 'com.jpardogo.listbuddies:library:1.0.0-SNAPSHOT'
 }
 
 File propFile = file('signing.properties');
