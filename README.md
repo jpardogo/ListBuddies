@@ -145,7 +145,7 @@ You can either add the library to your application as a library project or add t
 
 ```
 dependencies {
-    compile 'com.jpardogo.listbuddies:library:1.0.0'
+    compile 'com.jpardogo.listbuddies:library:(last_version)'
 }
 ```
 
