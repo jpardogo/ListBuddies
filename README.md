@@ -138,6 +138,17 @@ The color will need some transparency in order to act as the ListView selector:
 
 Although it is just optional.
 
+Including in your project
+-------------------------
+
+You can either add the library to your application as a library project or add the following dependency to your build.gradle:
+
+```
+dependencies {
+    compile 'com.jpardogo.listbuddies:library:1.0.0'
+}
+```
+
 
 Developed By
 --------------------
