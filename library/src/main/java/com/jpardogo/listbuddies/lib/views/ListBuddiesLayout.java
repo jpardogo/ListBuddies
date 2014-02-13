@@ -302,10 +302,18 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         if (mDownView != null && (isUserInteracting || mSpeed == 0)) {
             mDownView.setPressed(false);
             if (mItemBuddyListener != null) {
-                int buddy = list.getId() == mListViewLeft.getId() ? 0 : 1;
-                mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, mDownPosition, mDownView.getId());
+                int buddy=0;
+                if(list.getId() != mListViewLeft.getId()){
+                    buddy =1;
+                }
+                int position = getPosition(list,mDownPosition);
+                mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, position, mDownView.getId());
             }
         }
+    }
+
+    private int getPosition(ListView list, int position) {
+        return ((CircularLoopAdapter)list.getAdapter()).getCircularPosition(position);
     }
 
     private void startClickSelection(MotionEvent event, ListView list, float eventY) {

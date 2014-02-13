@@ -23,8 +23,9 @@ import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
 public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
-    private MenuItem mStartActivityOnItemClick;
-
+    private MenuItem mOpenActivities;
+    CircularAdapter mAdapterLeft;
+    CircularAdapter mAdapterRight;
     public ListBuddiesFragment() {
     }
 
@@ -39,17 +40,18 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ListBuddiesLayout listBuddies = (ListBuddiesLayout) rootView.findViewById(R.id.listbuddies);
-        CircularAdapter adapter = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_small), ImagesUrls.imageUrls_left);
-        CircularAdapter adapter2 = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_tall), ImagesUrls.imageUrls_right);
-        listBuddies.setAdapters(adapter, adapter2);
+        mAdapterLeft = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_small), ImagesUrls.imageUrls_left);
+        mAdapterRight = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_tall), ImagesUrls.imageUrls_right);
+        listBuddies.setAdapters(mAdapterLeft, mAdapterRight);
         listBuddies.setOnItemClickListener(this);
         return rootView;
     }
 
     @Override
     public void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id) {
-        if (mStartActivityOnItemClick.isChecked()) {
+        if (mOpenActivities.isChecked()) {
             Intent intent = new Intent(getActivity(), ExampleActivity.class);
+            intent.putExtra(ExampleActivity.EXTRA_URL,getImage(buddy,position));
             startActivity(intent);
         } else {
             Resources resources = getResources();
@@ -57,11 +59,15 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
         }
     }
 
+    private String getImage(int buddy, int position) {
+        return buddy==0?ImagesUrls.imageUrls_left[position]:ImagesUrls.imageUrls_right[position];
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        mStartActivityOnItemClick = menu.findItem(R.id.item1);
+        mOpenActivities = menu.findItem(R.id.item1);
     }
 
 

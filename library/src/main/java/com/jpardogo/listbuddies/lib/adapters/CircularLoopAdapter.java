@@ -29,7 +29,7 @@ public abstract class CircularLoopAdapter extends BaseAdapter {
      * @param position - position of the item in the list
      * @return - position that we actually wanna take from our list
      */
-    protected int getCircularPosition(int position) {
+    public int getCircularPosition(int position) {
         return position % getCircularCount();
     }
 
