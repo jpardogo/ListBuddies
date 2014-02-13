@@ -143,9 +143,9 @@ Including in your project
 
 You can either add the library to your application as a library project or add the following dependency to your build.gradle:
 
-```
+```groovy
 dependencies {
-    compile 'com.jpardogo.listbuddies:library:(last_version)'
+    compile 'com.jpardogo.listbuddies:library:(latest version)'
 }
 ```
 
