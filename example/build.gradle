@@ -33,6 +33,7 @@ dependencies {
     compile libraries.android_support
     compile 'com.android.support:appcompat-v7:19.0.0'
     compile 'com.squareup.picasso:picasso:2.1.1'
+    compile 'com.jakewharton:butterknife:4.0.1'
     compile project(':library')
 }
 
