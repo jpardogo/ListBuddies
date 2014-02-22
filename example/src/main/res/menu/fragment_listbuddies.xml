@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/checkbox_open_activities"
+        android:showAsAction="ifRoom"
+        android:title="@string/open_activities"
+        android:checkable="true" />
+</menu>

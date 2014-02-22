@@ -6,5 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="position">Position</string>
     <string name="list">List</string>
+    <string name="customize">Customize</string>
+    <string name="open_activities">Open activities</string>
 
 </resources>
