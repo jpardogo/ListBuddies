@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black_transp"
+    android:layout_margin="@dimen/margin_fragment_customize"
+    android:divider="?android:dividerHorizontal"
+    android:showDividers="middle"
+    android:gravity="bottom">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gap"
+                android:padding="@dimen/standar_padding"
+                android:textColor="@color/white"
+                android:layout_gravity="center_vertical" />
+
+            <SeekBar
+                android:id="@+id/seekBarGap"
+                android:max="30"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/touchable_ui"
+        android:textColor="@color/white"
+        android:text="APPLAY"
+        android:background="?android:selectableItemBackground" />
+</LinearLayout>
