@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import com.jpardogo.android.listbuddies.R;
 import com.squareup.picasso.Picasso;
 
-public class ExampleActivity extends ActionBarActivity {
+public class DetailActivity extends ActionBarActivity {
 
     public static final String EXTRA_URL = "url";
 
