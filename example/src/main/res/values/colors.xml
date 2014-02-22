@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="white">#FFF</color>
     <color name="blue">#7733B5E5</color>
     <color name="black">#000000</color>
     <color name="frame">@color/black</color>
+    <color name="black_transp">#80000000</color>
 </resources>
