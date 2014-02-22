@@ -16,17 +16,24 @@ import android.widget.Toast;
 import com.jpardogo.android.listbuddies.R;
 import com.jpardogo.android.listbuddies.adapters.CircularAdapter;
 import com.jpardogo.android.listbuddies.provider.ImagesUrls;
-import com.jpardogo.android.listbuddies.ui.ExampleActivity;
+import com.jpardogo.android.listbuddies.ui.DetailActivity;
 import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
 public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
     private MenuItem mOpenActivities;
-    CircularAdapter mAdapterLeft;
-    CircularAdapter mAdapterRight;
-    public ListBuddiesFragment() {
+    private CircularAdapter mAdapterLeft;
+    private CircularAdapter mAdapterRight;
+    @InjectView(R.id.listbuddies)
+    ListBuddiesLayout mListBuddies;
+
+    public static Fragment newInstance() {
+        return new ListBuddiesFragment();
     }
 
     @Override
@@ -39,19 +46,19 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ListBuddiesLayout listBuddies = (ListBuddiesLayout) rootView.findViewById(R.id.listbuddies);
+        ButterKnife.inject(this, rootView);
         mAdapterLeft = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_small), ImagesUrls.imageUrls_left);
         mAdapterRight = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_tall), ImagesUrls.imageUrls_right);
-        listBuddies.setAdapters(mAdapterLeft, mAdapterRight);
-        listBuddies.setOnItemClickListener(this);
+        mListBuddies.setAdapters(mAdapterLeft, mAdapterRight);
+        mListBuddies.setOnItemClickListener(this);
         return rootView;
     }
 
     @Override
     public void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id) {
         if (mOpenActivities.isChecked()) {
-            Intent intent = new Intent(getActivity(), ExampleActivity.class);
-            intent.putExtra(ExampleActivity.EXTRA_URL,getImage(buddy,position));
+            Intent intent = new Intent(getActivity(), DetailActivity.class);
+            intent.putExtra(DetailActivity.EXTRA_URL, getImage(buddy, position));
             startActivity(intent);
         } else {
             Resources resources = getResources();
@@ -60,21 +67,21 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
     private String getImage(int buddy, int position) {
-        return buddy==0?ImagesUrls.imageUrls_left[position]:ImagesUrls.imageUrls_right[position];
+        return buddy == 0 ? ImagesUrls.imageUrls_left[position] : ImagesUrls.imageUrls_right[position];
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.fragment_listbuddies, menu);
         super.onCreateOptionsMenu(menu, inflater);
-        mOpenActivities = menu.findItem(R.id.item1);
+        mOpenActivities = menu.findItem(R.id.checkbox_open_activities);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item1:
+            case R.id.checkbox_open_activities:
                 if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
@@ -85,5 +92,9 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void setGap(int value) {
+//        mListBuddies.setGap(value);
     }
 }
