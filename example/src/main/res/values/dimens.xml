@@ -6,5 +6,9 @@
     <dimen name="item_height_tall">220dp</dimen>
     <dimen name="gap">3dp</dimen>
     <dimen name="divider_height">@dimen/gap</dimen>
-
+    <dimen name="standar_padding">8dp</dimen>
+    <dimen name="standar_padding_small">4dp</dimen>
+    <dimen name="spinner_width">100dp</dimen>
+    <dimen name="touchable_ui">@android:dimen/app_icon_size</dimen>
+    <dimen name="margin_fragment_customize">25dp</dimen>
 </resources>
