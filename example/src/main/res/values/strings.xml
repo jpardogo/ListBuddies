@@ -8,5 +8,14 @@
     <string name="list">List</string>
     <string name="customize">Customize</string>
     <string name="open_activities">Open activities</string>
+    <string name="fillgap">Fill gap</string>
+    <string name="manual_fast_scroll">Faster manual scroll</string>
+    <string name="auto_fast_scroll">Faster auto scroll</string>
+    <string name="dividers">Dividers</string>
+    <string name="black">Black</string>
+    <string name="transparency">Transparency</string>
+    <string name="empty">Empty</string>
+    <string name="right">Right</string>
+    <string name="left">Left</string>
 
 </resources>
