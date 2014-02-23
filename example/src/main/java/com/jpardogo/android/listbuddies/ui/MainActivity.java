@@ -1,5 +1,6 @@
 package com.jpardogo.android.listbuddies.ui;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,7 +15,7 @@ import com.jpardogo.android.listbuddies.ui.fragments.CustomizeFragment;
 import com.jpardogo.android.listbuddies.ui.fragments.ListBuddiesFragment;
 
 
-public class MainActivity extends ActionBarActivity implements CustomizeFragment.OnSeekBarListener {
+public class MainActivity extends ActionBarActivity implements CustomizeFragment.OnCustomizeListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +67,58 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
     }
 
     @Override
+    public void setSpeed(int value) {
+        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        if (fragment != null) {
+            fragment.setSpeed(value);
+        }
+    }
+
+    @Override
     public void setGap(int value) {
         ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
         if (fragment != null) {
             fragment.setGap(value);
+        }
+    }
+
+    @Override
+    public void fillGap(int color) {
+        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        if (fragment != null) {
+            fragment.fillGap(color);
+        }
+    }
+
+    @Override
+    public void setDivider(Drawable drawable) {
+        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        if (fragment != null) {
+            fragment.setDivider(drawable);
+        }
+    }
+
+    @Override
+    public void setDividerHeight(int value) {
+        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        if (fragment != null) {
+            fragment.setDividerHeight(value);
+        }
+    }
+
+    @Override
+    public void setAutoScrollFaster(int option) {
+        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        if (fragment != null) {
+            fragment.setAutoScrollFaster(option);
+        }
+    }
+
+    @Override
+    public void setScrollFaster(int option) {
+        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        if (fragment != null) {
+            fragment.setScrollFaster(option);
         }
     }
 }
