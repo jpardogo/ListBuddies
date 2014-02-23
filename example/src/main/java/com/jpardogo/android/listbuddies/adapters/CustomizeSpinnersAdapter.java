@@ -34,7 +34,7 @@ public class CustomizeSpinnersAdapter implements SpinnerAdapter {
     public enum OptionTypes {
         BLACK,
         EMPTY,
-        RANDOM;
+        INSET;
     }
 
     @Override

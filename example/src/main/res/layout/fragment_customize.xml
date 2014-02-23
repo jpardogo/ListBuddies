@@ -116,12 +116,11 @@
             android:layout_marginLeft="@dimen/standar_padding" />
 
         <Spinner
-            android:id="@+id/scrollSpinner"
+            android:id="@+id/dividerSpinner"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/standar_padding" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -137,11 +136,12 @@
             android:layout_marginLeft="@dimen/standar_padding" />
 
         <Spinner
-            android:id="@+id/dividerSpinner"
+            android:id="@+id/scrollSpinner"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/standar_padding" />
+
     </LinearLayout>
 
 </LinearLayout>

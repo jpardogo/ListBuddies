@@ -3,6 +3,7 @@ package com.jpardogo.android.listbuddies.ui;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -10,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.jpardogo.android.listbuddies.R;
+import com.jpardogo.android.listbuddies.Utils.SharePreferences;
 import com.jpardogo.android.listbuddies.provider.FragmentTags;
 import com.jpardogo.android.listbuddies.ui.fragments.CustomizeFragment;
 import com.jpardogo.android.listbuddies.ui.fragments.ListBuddiesFragment;
@@ -44,7 +46,8 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
     }
 
     private void manageFragment(Fragment newInstanceFragment, FragmentTags tag, boolean addToBackStack) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
         Fragment currentIntanceFragment = findFragmentByTag(tag);
         if (currentIntanceFragment == null || (currentIntanceFragment != null && currentIntanceFragment.isHidden())) {
             if (currentIntanceFragment != null) {
@@ -58,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
             }
         } else {
             ft.hide(currentIntanceFragment);
+            fm.popBackStack();
         }
         ft.commit();
     }
@@ -120,5 +124,11 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
         if (fragment != null) {
             fragment.setScrollFaster(option);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharePreferences.reset();
     }
 }

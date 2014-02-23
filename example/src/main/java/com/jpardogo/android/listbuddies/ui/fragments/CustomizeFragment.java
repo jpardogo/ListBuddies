@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jpardogo.android.listbuddies.R;
+import com.jpardogo.android.listbuddies.Utils.SharePreferences;
 import com.jpardogo.android.listbuddies.adapters.CustomizeSpinnersAdapter;
 import com.jpardogo.android.listbuddies.models.KeyValuePair;
+import com.jpardogo.android.listbuddies.provider.SharedPrefKeys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class CustomizeFragment extends Fragment {
     @InjectView(R.id.fillGapSpinner)
     Spinner mFillGapSpinner;
     @InjectView(R.id.scrollSpinner)
-    Spinner mScrollSpinner;
+    Spinner mManualScrollSpinner;
     @InjectView(R.id.autoScrollSpinner)
     Spinner mAutoScrollSpinner;
     @InjectView(R.id.dividerSpinner)
@@ -56,8 +57,17 @@ public class CustomizeFragment extends Fragment {
     private OnCustomizeListener mOnCustomizeListener;
     private CustomizeSpinnersAdapter mSpinnerAdapter;
     private List<KeyValuePair> mColorSpinnerSections;
-    private List<KeyValuePair> mScrollSpinnerSections;
+    private List<KeyValuePair> mScrollScrollSpinnerSections;
     private int[] mScrollSpinnerValues;
+
+    private int mFillGapSpinnerPosition;
+    private int mAutoScrollSpinnerPosition;
+    private int mManualScrollSpinnerPosition;
+    private int mDividerSpinnerPosition;
+
+    private int mGapSeekBarProgress;
+    private int mSpeedSeekBarProgress;
+    private int mDivHeightSeekBarProgress;
 
     public static Fragment newInstance() {
         return new CustomizeFragment();
@@ -73,14 +83,35 @@ public class CustomizeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_customize, container, false);
         ButterKnife.inject(this, rootView);
-        mSeekBarGap.setOnSeekBarChangeListener(mSeekBarListener);
-        mSeekBarSpeed.setOnSeekBarChangeListener(mSeekBarListener);
-        mSeekBarDivHeight.setOnSeekBarChangeListener(mSeekBarListener);
-        initFillSpinners();
+        restartLastConfig();
+        setProgressText();
+        initSeekBars();
+        initSpinners();
         return rootView;
     }
 
-    private void initFillSpinners() {
+    private void initSeekBars() {
+        mSeekBarGap.setProgress(mGapSeekBarProgress);
+        mSeekBarGap.setOnSeekBarChangeListener(mSeekBarListener);
+        mSeekBarSpeed.setProgress(mSpeedSeekBarProgress);
+        mSeekBarSpeed.setOnSeekBarChangeListener(mSeekBarListener);
+        mSeekBarDivHeight.setProgress(mDivHeightSeekBarProgress);
+        mSeekBarDivHeight.setOnSeekBarChangeListener(mSeekBarListener);
+    }
+
+    private void setProgressText() {
+        seekBarGapValue.setText(String.valueOf(mGapSeekBarProgress));
+        seekBarSpeedValue.setText(String.valueOf(mSpeedSeekBarProgress));
+        seekBarDivHeightValue.setText(String.valueOf(mDivHeightSeekBarProgress));
+    }
+
+    private void restartLastConfig() {
+        mGapSeekBarProgress = SharePreferences.getValue(SharedPrefKeys.GAP_PROGRESS);
+        mSpeedSeekBarProgress = SharePreferences.getValue(SharedPrefKeys.SPEED_PROGRESS);
+        mDivHeightSeekBarProgress = SharePreferences.getValue(SharedPrefKeys.DIV_HEIGHT_PROGRESS);
+    }
+
+    private void initSpinners() {
         initFillGatSpinner();
         initScrollSpinner();
         initAutoScrollSpinner();
@@ -89,44 +120,45 @@ public class CustomizeFragment extends Fragment {
 
     private void initFillGatSpinner() {
         mColorSpinnerSections = getFillGapSpinnerItems();
-        mSpinnerAdapter = new CustomizeSpinnersAdapter(getActivity(), mColorSpinnerSections, "Fill gap");
-        mFillGapSpinner.setAdapter(mSpinnerAdapter);
-        mFillGapSpinner.setOnItemSelectedListener(mSpinnerListener);
+        setSpinner(mFillGapSpinner, mColorSpinnerSections, getString(R.string.fillgap)).setSelection(SharePreferences.getValue(SharedPrefKeys.FILL_GAP_POSITION));
     }
 
     private void initScrollSpinner() {
-        mScrollSpinnerSections = getScrollItems();
-        mSpinnerAdapter = new CustomizeSpinnersAdapter(getActivity(), mScrollSpinnerSections, "Manual scroll");
-        mScrollSpinner.setAdapter(mSpinnerAdapter);
-        mScrollSpinner.setOnItemSelectedListener(mSpinnerListener);
+        mScrollScrollSpinnerSections = getScrollItems();
+        setSpinner(mManualScrollSpinner, mScrollScrollSpinnerSections, getString(R.string.manual_fast_scroll)).setSelection(SharePreferences.getValue(SharedPrefKeys.MANUAL_SCROLL_POSITION));
+
     }
 
     private void initAutoScrollSpinner() {
-        mScrollSpinnerSections = getScrollItems();
-        mSpinnerAdapter = new CustomizeSpinnersAdapter(getActivity(), mScrollSpinnerSections, "Fast auto scroll");
-        mAutoScrollSpinner.setAdapter(mSpinnerAdapter);
-        mAutoScrollSpinner.setOnItemSelectedListener(mSpinnerListener);
+        mScrollScrollSpinnerSections = getScrollItems();
+        setSpinner(mAutoScrollSpinner, mScrollScrollSpinnerSections, getString(R.string.auto_fast_scroll)).setSelection(SharePreferences.getValue(SharedPrefKeys.AUTO_SCROLL_POSITION));
     }
 
     private void initDividerSpinner() {
         mColorSpinnerSections = getFillGapSpinnerItems();
-        mSpinnerAdapter = new CustomizeSpinnersAdapter(getActivity(), mColorSpinnerSections, "Dividers");
-        mDividerSpinner.setAdapter(mSpinnerAdapter);
-        mDividerSpinner.setOnItemSelectedListener(mSpinnerListener);
+        setSpinner(mDividerSpinner, mColorSpinnerSections, getString(R.string.dividers)).setSelection(SharePreferences.getValue(SharedPrefKeys.DIVIDERS_POSITION));
+    }
+
+    private Spinner setSpinner(Spinner spinner, List<KeyValuePair> items, String mainTitle) {
+        mSpinnerAdapter = new CustomizeSpinnersAdapter(getActivity(), items, mainTitle);
+        spinner.setAdapter(mSpinnerAdapter);
+        spinner.setOnItemSelectedListener(mSpinnerListener);
+        return spinner;
     }
 
     private List<KeyValuePair> getScrollItems() {
         return new ArrayList<KeyValuePair>() {{
-            add(new KeyValuePair("Right", mScrollSpinnerValues[1]));
-            add(new KeyValuePair("Left", mScrollSpinnerValues[2]));
+            add(new KeyValuePair(getString(R.string.right), mScrollSpinnerValues[1]));
+            add(new KeyValuePair(getString(R.string.left), mScrollSpinnerValues[2]));
         }};
     }
 
     private List<KeyValuePair> getFillGapSpinnerItems() {
         return new ArrayList<KeyValuePair>() {{
-            add(new KeyValuePair("Black", CustomizeSpinnersAdapter.OptionTypes.BLACK));
-            add(new KeyValuePair("Empty", CustomizeSpinnersAdapter.OptionTypes.EMPTY));
-            add(new KeyValuePair("Random", CustomizeSpinnersAdapter.OptionTypes.RANDOM));
+            add(new KeyValuePair(getString(R.string.black), CustomizeSpinnersAdapter.OptionTypes.BLACK));
+            add(new KeyValuePair(getString(R.string.transparency), CustomizeSpinnersAdapter.OptionTypes.INSET));
+            add(new KeyValuePair(getString(R.string.empty), CustomizeSpinnersAdapter.OptionTypes.EMPTY));
+
         }};
     }
 
@@ -134,33 +166,30 @@ public class CustomizeFragment extends Fragment {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            Log.i(TAG, "Progress: " + progress);
             switch (seekBar.getId()) {
                 case R.id.seekBarGap:
+                    mGapSeekBarProgress = progress;
                     seekBarGapValue.setText(String.valueOf(progress));
                     mOnCustomizeListener.setGap(progress);
                     break;
                 case R.id.seekBarSpeed:
+                    mSpeedSeekBarProgress = progress;
                     seekBarSpeedValue.setText(String.valueOf(progress));
                     mOnCustomizeListener.setSpeed(progress);
                     break;
                 case R.id.seekBarDivHeight:
+                    mDivHeightSeekBarProgress = progress;
                     seekBarDivHeightValue.setText(String.valueOf(progress));
                     mOnCustomizeListener.setDividerHeight(progress);
                     break;
             }
-
-
         }
-
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
-
         }
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-
         }
     };
 
@@ -170,31 +199,32 @@ public class CustomizeFragment extends Fragment {
             int value;
             switch (adapterView.getId()) {
                 case R.id.fillGapSpinner:
+                    mFillGapSpinnerPosition = position;
                     value = mColorSpinnerSections.get(position).getColor(getActivity());
                     mOnCustomizeListener.fillGap(value);
                     break;
                 case R.id.autoScrollSpinner:
-                    value = mScrollSpinnerSections.get(position).getScrollOption();
+                    mAutoScrollSpinnerPosition = position;
+                    value = mScrollScrollSpinnerSections.get(position).getScrollOption();
                     mOnCustomizeListener.setAutoScrollFaster(value);
                     break;
                 case R.id.scrollSpinner:
-                    value = mScrollSpinnerSections.get(position).getScrollOption();
+                    mManualScrollSpinnerPosition = position;
+                    value = mScrollScrollSpinnerSections.get(position).getScrollOption();
                     mOnCustomizeListener.setScrollFaster(value);
                     break;
                 case R.id.dividerSpinner:
+                    mDividerSpinnerPosition = position;
                     int color = mColorSpinnerSections.get(position).getColor(getActivity());
                     color = color == -1 ? getResources().getColor(android.R.color.transparent) : color;
                     Drawable drawable = new ColorDrawable(color);
                     mOnCustomizeListener.setDivider(drawable);
                     break;
             }
-
-
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> adapterView) {
-
         }
     };
 
@@ -224,5 +254,17 @@ public class CustomizeFragment extends Fragment {
         void setAutoScrollFaster(int option);
 
         void setScrollFaster(int option);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SharePreferences.saveCustomization(SharedPrefKeys.GAP_PROGRESS, mGapSeekBarProgress);
+        SharePreferences.saveCustomization(SharedPrefKeys.SPEED_PROGRESS, mSpeedSeekBarProgress);
+        SharePreferences.saveCustomization(SharedPrefKeys.DIV_HEIGHT_PROGRESS, mDivHeightSeekBarProgress);
+        SharePreferences.saveCustomization(SharedPrefKeys.FILL_GAP_POSITION, mFillGapSpinnerPosition);
+        SharePreferences.saveCustomization(SharedPrefKeys.MANUAL_SCROLL_POSITION, mManualScrollSpinnerPosition);
+        SharePreferences.saveCustomization(SharedPrefKeys.AUTO_SCROLL_POSITION, mAutoScrollSpinnerPosition);
+        SharePreferences.saveCustomization(SharedPrefKeys.DIVIDERS_POSITION, mDividerSpinnerPosition);
     }
 }
