@@ -11,4 +11,5 @@
     <dimen name="spinner_width">100dp</dimen>
     <dimen name="touchable_ui">@android:dimen/app_icon_size</dimen>
     <dimen name="margin_fragment_customize">25dp</dimen>
+    <dimen name="status_plus_action_bars_height">73dp</dimen>
 </resources>
