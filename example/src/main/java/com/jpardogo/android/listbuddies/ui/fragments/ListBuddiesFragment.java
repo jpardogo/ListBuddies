@@ -2,6 +2,7 @@ package com.jpardogo.android.listbuddies.ui.fragments;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -95,6 +96,30 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
     public void setGap(int value) {
-//        mListBuddies.setGap(value);
+        mListBuddies.setGap(value);
+    }
+
+    public void setSpeed(int value) {
+        mListBuddies.setSpeed(value);
+    }
+
+    public void setDividerHeight(int value) {
+        mListBuddies.setDividerHeight(value);
+    }
+
+    public void fillGap(int color) {
+        mListBuddies.fillGap(color);
+    }
+
+    public void setAutoScrollFaster(int option) {
+        mListBuddies.setAutoScrollFaster(option);
+    }
+
+    public void setScrollFaster(int option) {
+        mListBuddies.setScrollFaster(option);
+    }
+
+    public void setDivider(Drawable drawable) {
+        mListBuddies.setDivider(drawable);
     }
 }

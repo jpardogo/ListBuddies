@@ -1,7 +1,6 @@
 package com.jpardogo.listbuddies.lib.views;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -56,11 +55,13 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     private int mDividerHeight;
     private boolean isAutoScrollLeftListFaster;
     private boolean isScrollLeftListFaster;
+    private ViewStub mViewStubGap;
+    private View mGapView;
 
     public ListBuddiesLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        setListBuddiesAttributes(context,attrs);
+        setListBuddiesAttributes(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.listbuddies, this, true);
         mListViewLeft = (ObservableListView) findViewById(R.id.list_left);
         mListViewRight = (ObservableListView) findViewById(R.id.list_right);
@@ -71,17 +72,17 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         startAutoScroll();
     }
 
-    private void setListBuddiesAttributes(Context context,AttributeSet attrs) {
+    private void setListBuddiesAttributes(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListBuddiesOptions, 0, 0);
         mGap = a.getDimensionPixelSize(R.styleable.ListBuddiesOptions_gap, getResources().getDimensionPixelSize(R.dimen.default_margin_between_lists));
         mSpeed = a.getInteger(R.styleable.ListBuddiesOptions_speed, DEFAULT_SPEED);
-        int scrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_autoScrollFaster,1);
-        isAutoScrollLeftListFaster = scrollLeftListFaster==1;
-        isScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster,scrollLeftListFaster)==1;
+        int scrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_autoScrollFaster, 1);
+        isAutoScrollLeftListFaster = scrollLeftListFaster == 1;
+        isScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster, scrollLeftListFaster) == 1;
         calibrateSpeed();
         mDivider = a.getDrawable(R.styleable.ListBuddiesOptions_listsDivider);
         mDividerHeight = a.getDimensionPixelSize(R.styleable.ListBuddiesOptions_listsDividerHeight, ATTR_NOT_SET);
-        mGapColor = a.getColor(R.styleable.ListBuddiesOptions_fillGap,ATTR_NOT_SET);
+        mGapColor = a.getColor(R.styleable.ListBuddiesOptions_fillGap, ATTR_NOT_SET);
         a.recycle();
     }
 
@@ -91,66 +92,89 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
             mSpeed = DEFAULT_SPEED;
         }
 
-        if(isAutoScrollLeftListFaster){
-            mSpeedLeft=mSpeed;
-            mSpeedRight=mSpeed/2;
-        }else{
-            mSpeedLeft=mSpeed/2;
-            mSpeedRight=mSpeed;
+        if (isAutoScrollLeftListFaster) {
+            mSpeedLeft = mSpeed;
+            mSpeedRight = mSpeed / 2;
+        } else {
+            mSpeedLeft = mSpeed / 2;
+            mSpeedRight = mSpeed;
         }
     }
 
     private void setViewParams() {
         setGap();
-        setDivider(mDivider, mDividerHeight);
+        setDividerAndHeight(mDivider, mDividerHeight);
     }
 
     private void setGap() {
-        if(mGapColor!=ATTR_NOT_SET){
+        if (mGapColor != ATTR_NOT_SET) {
             fillGap();
-        }else{
+            setGapColor();
+        } else {
             emptyGap();
         }
     }
 
+    private void setGapColor() {
+        if (mGapView != null && mGapColor != ATTR_NOT_SET) {
+            mGapView.setBackgroundColor(mGapColor);
+        }
+    }
+
     private void emptyGap() {
-        LinearLayout.LayoutParams params = (LayoutParams) mListViewLeft.getLayoutParams();
-        params.setMargins(0, 0, mGap, 0);
-        mListViewLeft.setLayoutParams(params);
+        setLeftListMargin(mGap);
+        if (mGapView != null) {
+            mGapView.setVisibility(View.GONE);
+        }
+    }
+
+    private void setLeftListMargin(int marginRigth) {
+        if (mListViewLeft != null) {
+            LinearLayout.LayoutParams params = (LayoutParams) mListViewLeft.getLayoutParams();
+            params.setMargins(0, 0, marginRigth, 0);
+            mListViewLeft.setLayoutParams(params);
+        }
     }
 
     private void fillGap() {
-        View gap = ((ViewStub) findViewById(R.id.gap)).inflate();
-        LinearLayout.LayoutParams params = (LayoutParams) gap.getLayoutParams();
-        params.width = mGap;
-        gap.setLayoutParams(params);
-        gap.setBackgroundColor(mGapColor);
+        if (mViewStubGap == null) {
+            mViewStubGap = (ViewStub) findViewById(R.id.gap);
+        }
+        if (mGapView == null) {
+            mGapView = mViewStubGap.inflate();
+        }
+
+        setLeftListMargin(0);
+        setGapWidth(mGap);
+        if (mGapView != null) {
+            mGapView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setGapWidth(int width) {
+        if (mGapView != null) {
+            LinearLayout.LayoutParams params = (LayoutParams) mGapView.getLayoutParams();
+            params.width = width;
+            mGapView.setLayoutParams(params);
+        }
     }
 
     private void setHeightDivider(int dividerHeight) {
-        if(dividerHeight>ATTR_NOT_SET){
+        if (dividerHeight > ATTR_NOT_SET) {
             mListViewLeft.setDividerHeight(dividerHeight);
             mListViewRight.setDividerHeight(dividerHeight);
         }
     }
 
-    private void setDivider(Drawable divider, int dividerHeight) {
-        setDivider(divider);
+    private void setDividerAndHeight(Drawable drawable, int dividerHeight) {
+        setListsDivider(drawable);
         setHeightDivider(dividerHeight);
     }
 
-    private void setDivider(int divider) {
-        if (divider == 0) {
-            throw new Resources.NotFoundException("The resource id for the divider cannot be 0");
-        }
-        Drawable drawable = getResources().getDrawable(divider);
-        setDivider(drawable);
-    }
-
-    private void setDivider(Drawable divider) {
-        if(divider!=null){
-            mListViewLeft.setDivider(divider);
-            mListViewRight.setDivider(divider);
+    private void setListsDivider(Drawable drawable) {
+        if (drawable != null) {
+            mListViewLeft.setDivider(drawable);
+            mListViewRight.setDivider(drawable);
         }
     }
 
@@ -302,18 +326,18 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         if (mDownView != null && (isUserInteracting || mSpeed == 0)) {
             mDownView.setPressed(false);
             if (mItemBuddyListener != null) {
-                int buddy=0;
-                if(list.getId() != mListViewLeft.getId()){
-                    buddy =1;
+                int buddy = 0;
+                if (list.getId() != mListViewLeft.getId()) {
+                    buddy = 1;
                 }
-                int position = getPosition(list,mDownPosition);
+                int position = getPosition(list, mDownPosition);
                 mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, position, mDownView.getId());
             }
         }
     }
 
     private int getPosition(ListView list, int position) {
-        return ((CircularLoopAdapter)list.getAdapter()).getCircularPosition(position);
+        return ((CircularLoopAdapter) list.getAdapter()).getCircularPosition(position);
     }
 
     private void startClickSelection(MotionEvent event, ListView list, float eventY) {
@@ -365,11 +389,11 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     public void onListScroll(View view, float deltaY) {
         int speed;
         if (view.getId() == mListViewLeft.getId() && !isLeftListEnabled) {
-            speed = getSpeed(false,deltaY);
+            speed = getSpeed(false, deltaY);
 
             mListViewRight.smoothScrollBy(speed, 0);
         } else if (view.getId() == mListViewRight.getId() && !isRightListEnabled) {
-            speed = getSpeed(true,deltaY);
+            speed = getSpeed(true, deltaY);
             mListViewLeft.smoothScrollBy(speed, 0);
         }
     }
@@ -377,13 +401,14 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     private int getSpeed(boolean isCalculationForLeft, float deltaY) {
         int speed;
 
-        if(isScrollLeftListFaster && isCalculationForLeft || !isScrollLeftListFaster && !isCalculationForLeft){
-            speed= (int) -deltaY * 2;
-        }else{
-            speed=(int) -deltaY / 2;
+        if (isScrollLeftListFaster && isCalculationForLeft || !isScrollLeftListFaster && !isCalculationForLeft) {
+            speed = (int) -deltaY * 2;
+        } else {
+            speed = (int) -deltaY / 2;
         }
         return speed;
     }
+
     /**
      * Each time we touch the opposite ListView than the last one we have selected
      * we need to activate it as the enable one
@@ -402,6 +427,41 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
 
     public void setOnItemClickListener(OnBuddyItemClickListener listener) {
         mItemBuddyListener = listener;
+    }
+
+    public void setGap(int value) {
+        mGap = value;
+        setGap();
+    }
+
+    public void setSpeed(int value) {
+        mSpeed = value;
+        calibrateSpeed();
+    }
+
+    public void setDividerHeight(int value) {
+        mDividerHeight = value;
+        setDividerAndHeight(mDivider, value);
+    }
+
+    public void setDivider(Drawable drawable) {
+        mDivider = drawable;
+        setDividerAndHeight(drawable, mDividerHeight);
+    }
+
+
+    public void fillGap(int color) {
+        mGapColor = color;
+        setGap();
+    }
+
+    public void setAutoScrollFaster(int option) {
+        isAutoScrollLeftListFaster = option == 1;
+        calibrateSpeed();
+    }
+
+    public void setScrollFaster(int option) {
+        isScrollLeftListFaster = option == 1;
     }
 
     public interface OnBuddyItemClickListener {
