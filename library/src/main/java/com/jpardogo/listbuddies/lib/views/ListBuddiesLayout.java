@@ -28,8 +28,8 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     private static final String TAG = ListBuddiesLayout.class.getSimpleName();
     private static final long PRESS_DELAY = 100;
     private static final float CANCEL_CLICK_LIMIT = 8;
-    private static final int DEFAULT_SPEED = 2;
-    private static int ATTR_NOT_SET = -1;
+    public static final int DEFAULT_SPEED = 2;
+    public static int ATTR_NOT_SET = -1;
 
     private OnBuddyItemClickListener mItemBuddyListener;
     private int[] mListViewCoords = new int[2];
@@ -54,7 +54,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     private Drawable mDivider;
     private int mDividerHeight;
     private boolean isAutoScrollLeftListFaster;
-    private boolean isScrollLeftListFaster;
+    private boolean isManualScrollLeftListFaster;
     private ViewStub mViewStubGap;
     private View mGapView;
 
@@ -78,7 +78,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         mSpeed = a.getInteger(R.styleable.ListBuddiesOptions_speed, DEFAULT_SPEED);
         int scrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_autoScrollFaster, 1);
         isAutoScrollLeftListFaster = scrollLeftListFaster == 1;
-        isScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster, scrollLeftListFaster) == 1;
+        isManualScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster, scrollLeftListFaster) == 1;
         calibrateSpeed();
         mDivider = a.getDrawable(R.styleable.ListBuddiesOptions_listsDivider);
         mDividerHeight = a.getDimensionPixelSize(R.styleable.ListBuddiesOptions_listsDividerHeight, ATTR_NOT_SET);
@@ -401,7 +401,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     private int getSpeed(boolean isCalculationForLeft, float deltaY) {
         int speed;
 
-        if (isScrollLeftListFaster && isCalculationForLeft || !isScrollLeftListFaster && !isCalculationForLeft) {
+        if (isManualScrollLeftListFaster && isCalculationForLeft || !isManualScrollLeftListFaster && !isCalculationForLeft) {
             speed = (int) -deltaY * 2;
         } else {
             speed = (int) -deltaY / 2;
@@ -460,8 +460,8 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         calibrateSpeed();
     }
 
-    public void setScrollFaster(int option) {
-        isScrollLeftListFaster = option == 1;
+    public void setManualScrollFaster(int option) {
+        isManualScrollLeftListFaster = option == 1;
     }
 
     public interface OnBuddyItemClickListener {

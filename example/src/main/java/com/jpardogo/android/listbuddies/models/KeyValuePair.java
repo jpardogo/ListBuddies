@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jpardogo.android.listbuddies.R;
 import com.jpardogo.android.listbuddies.adapters.CustomizeSpinnersAdapter;
+import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
 
 /**
  * Created by jpardogo on 22/02/2014.
@@ -18,7 +19,7 @@ public class KeyValuePair {
     }
 
     public int getColor(Context context) {
-        int color = -1;
+        int color = ListBuddiesLayout.ATTR_NOT_SET;
         if (value instanceof CustomizeSpinnersAdapter.OptionTypes) {
             switch ((CustomizeSpinnersAdapter.OptionTypes) value) {
                 case BLACK:

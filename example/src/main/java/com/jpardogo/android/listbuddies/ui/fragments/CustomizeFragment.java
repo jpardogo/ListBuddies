@@ -18,6 +18,8 @@ import com.jpardogo.android.listbuddies.Utils.SharePreferences;
 import com.jpardogo.android.listbuddies.adapters.CustomizeSpinnersAdapter;
 import com.jpardogo.android.listbuddies.models.KeyValuePair;
 import com.jpardogo.android.listbuddies.provider.SharedPrefKeys;
+import com.jpardogo.listbuddies.lib.provider.ScrollConfigOptions;
+import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,8 +150,8 @@ public class CustomizeFragment extends Fragment {
 
     private List<KeyValuePair> getScrollItems() {
         return new ArrayList<KeyValuePair>() {{
-            add(new KeyValuePair(getString(R.string.right), mScrollSpinnerValues[1]));
-            add(new KeyValuePair(getString(R.string.left), mScrollSpinnerValues[2]));
+            add(new KeyValuePair(getString(R.string.right), mScrollSpinnerValues[ScrollConfigOptions.RIGHT.getConfigValue()]));
+            add(new KeyValuePair(getString(R.string.left), mScrollSpinnerValues[ScrollConfigOptions.LEFT.getConfigValue()]));
         }};
     }
 
@@ -216,7 +218,7 @@ public class CustomizeFragment extends Fragment {
                 case R.id.dividerSpinner:
                     mDividerSpinnerPosition = position;
                     int color = mColorSpinnerSections.get(position).getColor(getActivity());
-                    color = color == -1 ? getResources().getColor(android.R.color.transparent) : color;
+                    color = color == ListBuddiesLayout.ATTR_NOT_SET ? getResources().getColor(android.R.color.transparent) : color;
                     Drawable drawable = new ColorDrawable(color);
                     mOnCustomizeListener.setDivider(drawable);
                     break;
