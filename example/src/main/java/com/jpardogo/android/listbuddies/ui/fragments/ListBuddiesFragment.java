@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +16,7 @@ import com.jpardogo.android.listbuddies.R;
 import com.jpardogo.android.listbuddies.adapters.CircularAdapter;
 import com.jpardogo.android.listbuddies.provider.ImagesUrls;
 import com.jpardogo.android.listbuddies.ui.DetailActivity;
+import com.jpardogo.listbuddies.lib.provider.ScrollConfigOptions;
 import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
 
 import butterknife.ButterKnife;
@@ -27,20 +26,14 @@ import butterknife.InjectView;
 public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
-    private MenuItem mOpenActivities;
+    private Boolean mOpenActivities;
     private CircularAdapter mAdapterLeft;
     private CircularAdapter mAdapterRight;
     @InjectView(R.id.listbuddies)
     ListBuddiesLayout mListBuddies;
 
-    public static Fragment newInstance() {
+    public static ListBuddiesFragment newInstance() {
         return new ListBuddiesFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -57,7 +50,7 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
 
     @Override
     public void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id) {
-        if (mOpenActivities.isChecked()) {
+        if (mOpenActivities) {
             Intent intent = new Intent(getActivity(), DetailActivity.class);
             intent.putExtra(DetailActivity.EXTRA_URL, getImage(buddy, position));
             startActivity(intent);
@@ -72,17 +65,9 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_listbuddies, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        mOpenActivities = menu.findItem(R.id.checkbox_open_activities);
-    }
-
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.checkbox_open_activities:
+            case R.id.action_open_activities:
                 if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
@@ -116,10 +101,26 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
     public void setScrollFaster(int option) {
-        mListBuddies.setScrollFaster(option);
+        mListBuddies.setManualScrollFaster(option);
     }
 
     public void setDivider(Drawable drawable) {
         mListBuddies.setDivider(drawable);
+    }
+
+    public void setOpenActivities(Boolean openActivities) {
+        this.mOpenActivities = openActivities;
+    }
+
+    public void resetLayout() {
+        int marginDefault = getResources().getDimensionPixelSize(com.jpardogo.listbuddies.lib.R.dimen.default_margin_between_lists);
+        int[] scrollConfig = getResources().getIntArray(R.attr.scrollFaster);
+        mListBuddies.setGap(marginDefault);
+        mListBuddies.setSpeed(ListBuddiesLayout.DEFAULT_SPEED);
+        mListBuddies.setDividerHeight(marginDefault);
+        mListBuddies.fillGap(getResources().getColor(R.color.frame));
+        mListBuddies.setAutoScrollFaster(scrollConfig[ScrollConfigOptions.RIGHT.getConfigValue()]);
+        mListBuddies.setManualScrollFaster(scrollConfig[ScrollConfigOptions.LEFT.getConfigValue()]);
+        mListBuddies.setDivider(getResources().getDrawable(R.drawable.divider));
     }
 }

@@ -7,4 +7,23 @@
         android:title="@string/customize"
         android:icon="@drawable/ic_action_customize"
         android:checkable="true" />
+
+    <item android:id="@+id/menu">
+
+        <item
+            android:id="@+id/action_reset"
+            android:showAsAction="ifRoom"
+            android:icon="@drawable/ic_action_reset"
+            android:title="Reset" />
+        <item
+            android:id="@+id/action_open_activities"
+            android:showAsAction="ifRoom"
+            android:title="@string/open_activities"
+            android:checkable="true" />
+        <item
+            android:id="@+id/action_about"
+            android:showAsAction="ifRoom"
+            android:icon="@drawable/ic_action_customize"
+            android:title="About" />
+    </item>
 </menu>

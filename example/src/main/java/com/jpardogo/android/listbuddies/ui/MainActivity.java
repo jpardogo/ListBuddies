@@ -38,6 +38,12 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_open_activities:
+                onOpenActivitiesClick(item);
+                break;
+            case R.id.action_reset:
+                resetLayout();
+                break;
             case R.id.action_customize:
                 manageFragment(CustomizeFragment.newInstance(), FragmentTags.CUSTOMIZE, true);
                 break;
@@ -72,7 +78,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     @Override
     public void setSpeed(int value) {
-        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
             fragment.setSpeed(value);
         }
@@ -80,7 +86,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     @Override
     public void setGap(int value) {
-        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
             fragment.setGap(value);
         }
@@ -88,7 +94,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     @Override
     public void fillGap(int color) {
-        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
             fragment.fillGap(color);
         }
@@ -96,7 +102,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     @Override
     public void setDivider(Drawable drawable) {
-        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
             fragment.setDivider(drawable);
         }
@@ -104,7 +110,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     @Override
     public void setDividerHeight(int value) {
-        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
             fragment.setDividerHeight(value);
         }
@@ -112,7 +118,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     @Override
     public void setAutoScrollFaster(int option) {
-        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
             fragment.setAutoScrollFaster(option);
         }
@@ -120,7 +126,7 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     @Override
     public void setScrollFaster(int option) {
-        ListBuddiesFragment fragment = (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+        ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
             fragment.setScrollFaster(option);
         }
@@ -129,6 +135,32 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        reset();
+    }
+
+    private void resetLayout() {
+        ListBuddiesFragment fragment = getListBuddiesFragment();
+        if (fragment != null) {
+            fragment.resetLayout();
+            reset();
+        }
+    }
+
+    private void reset() {
         SharePreferences.reset();
+    }
+
+    public boolean onOpenActivitiesClick(MenuItem menuItem) {
+        menuItem.setChecked(!menuItem.isChecked());
+        ListBuddiesFragment fragment = getListBuddiesFragment();
+        if (fragment != null) {
+            fragment.setOpenActivities(menuItem.isChecked());
+        }
+
+        return false;
+    }
+
+    private ListBuddiesFragment getListBuddiesFragment() {
+        return (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
     }
 }
