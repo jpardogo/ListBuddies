@@ -143,6 +143,10 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
         if (fragment != null) {
             fragment.resetLayout();
             reset();
+            CustomizeFragment customizeFragment = (CustomizeFragment) findFragmentByTag(FragmentTags.CUSTOMIZE);
+            if (customizeFragment != null) {
+                customizeFragment.reset();
+            }
         }
     }
 
