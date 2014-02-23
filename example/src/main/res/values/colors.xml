@@ -5,4 +5,5 @@
     <color name="black">#000000</color>
     <color name="frame">@color/black</color>
     <color name="black_transp">#80000000</color>
+    <color name="apptheme_color">#33b5e5</color>
 </resources>

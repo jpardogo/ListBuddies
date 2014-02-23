@@ -3,12 +3,9 @@
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="SpinnerAppTheme" parent="android:Widget.Spinner">
+    <style name="SpinnerAppTheme" parent="android:Widget.Holo.Spinner">
         <item name="android:background">@drawable/apptheme_spinner_background_holo_dark</item>
         <item name="android:dropDownSelector">@drawable/apptheme_list_selector_holo_dark</item>
     </style>
 
-    <style name="SpinnerDropDownItemAppTheme" parent="android:Widget.DropDownItem.Spinner">
-        <item name="android:checkMark">@drawable/apptheme_btn_radio_holo_dark</item>
-    </style>
 </resources>
