@@ -17,5 +17,6 @@
     <string name="empty">Empty</string>
     <string name="right">Right</string>
     <string name="left">Left</string>
-
+    <string name="reset">Reset</string>
+    <string name="about">About</string>
 </resources>

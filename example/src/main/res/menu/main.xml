@@ -14,7 +14,7 @@
             android:id="@+id/action_reset"
             android:showAsAction="ifRoom"
             android:icon="@drawable/ic_action_reset"
-            android:title="Reset" />
+            android:title="@string/reset" />
         <item
             android:id="@+id/action_open_activities"
             android:showAsAction="ifRoom"
@@ -24,6 +24,6 @@
             android:id="@+id/action_about"
             android:showAsAction="ifRoom"
             android:icon="@drawable/ic_action_customize"
-            android:title="About" />
+            android:title="@string/about" />
     </item>
 </menu>
