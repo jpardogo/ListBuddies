@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="white">#FFF</color>
+    <color name="white">@android:color/white</color>
     <color name="blue">#7733B5E5</color>
     <color name="black">#000000</color>
-    <color name="frame">@color/black</color>
+    <color name="frame">@android:color/black</color>
     <color name="apptheme_color">#33b5e5</color>
     <color name="inset">#9000</color>
 </resources>
