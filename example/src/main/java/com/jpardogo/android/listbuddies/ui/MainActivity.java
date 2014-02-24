@@ -1,5 +1,6 @@
 package com.jpardogo.android.listbuddies.ui;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,8 @@ import com.jpardogo.android.listbuddies.ui.fragments.ListBuddiesFragment;
 
 public class MainActivity extends ActionBarActivity implements CustomizeFragment.OnCustomizeListener {
 
+    private boolean isOpenActivitiesActivated = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +35,8 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = new MenuInflater(this);
         menuInflater.inflate(R.menu.main, menu);
+        MenuItem openActivities = menu.findItem(R.id.action_open_activities);
+        openActivities.setChecked(isOpenActivitiesActivated);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -47,8 +52,16 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
             case R.id.action_customize:
                 manageFragment(CustomizeFragment.newInstance(), FragmentTags.CUSTOMIZE, true);
                 break;
+            case R.id.action_about:
+                startActivityWith(AboutActivity.class);
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startActivityWith(Class clazz) {
+        Intent intent = new Intent(this, clazz);
+        startActivity(intent);
     }
 
     private void manageFragment(Fragment newInstanceFragment, FragmentTags tag, boolean addToBackStack) {
@@ -155,10 +168,11 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
     }
 
     public boolean onOpenActivitiesClick(MenuItem menuItem) {
-        menuItem.setChecked(!menuItem.isChecked());
+        isOpenActivitiesActivated = !menuItem.isChecked();
+        menuItem.setChecked(isOpenActivitiesActivated);
         ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
-            fragment.setOpenActivities(menuItem.isChecked());
+            fragment.setOpenActivities(isOpenActivitiesActivated);
         }
 
         return false;
@@ -166,5 +180,11 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
 
     private ListBuddiesFragment getListBuddiesFragment() {
         return (ListBuddiesFragment) findFragmentByTag(FragmentTags.LIST_BUDDIES);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(0, 0);
     }
 }

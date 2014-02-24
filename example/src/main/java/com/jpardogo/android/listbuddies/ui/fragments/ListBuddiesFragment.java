@@ -26,7 +26,7 @@ import butterknife.InjectView;
 public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
-    private Boolean mOpenActivities;
+    private boolean mOpenActivities;
     private CircularAdapter mAdapterLeft;
     private CircularAdapter mAdapterRight;
     @InjectView(R.id.listbuddies)
