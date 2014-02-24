@@ -19,14 +19,14 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/TranslucentTheme">
 
         <activity
             android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name"
-            android:theme="@style/TranslucentTheme">
-            <intent-filter>
+            android:launchMode="singleTop">
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,9 +34,24 @@
         </activity>
 
         <activity
-            android:name=".ui.DetailActivity"
+            android:name="com.jpardogo.android.listbuddies.ui.DetailActivity"
             android:screenOrientation="portrait"
-            android:label="@string/app_name" />
+            android:parentActivityName="com.jpardogo.android.listbuddies.ui.MainActivity"
+            android:label="@string/detail">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.jpardogo.android.listbuddies.ui.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.jpardogo.android.listbuddies.ui.AboutActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName="com.jpardogo.android.listbuddies.ui.MainActivity"
+            android:label="@string/about">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.jpardogo.android.listbuddies.ui.MainActivity" />
+        </activity>
 
     </application>
 
