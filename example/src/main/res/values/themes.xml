@@ -3,9 +3,7 @@
 <!-- Generated with http://android-holo-colors.com -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar" />
-
-    <style name="TranslucentTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="TranslucentTheme" parent="Theme.AppCompat">
         <item name="android:actionBarStyle">@style/TranslucentActionBar</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowTranslucentStatus">true</item>

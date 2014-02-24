@@ -12,8 +12,13 @@
         <item name="android:checkMark">@drawable/apptheme_btn_radio_holo_dark</item>
     </style>
 
-    <style name="TranslucentActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="TranslucentActionBar" parent="@style/Widget.AppCompat.Base.ActionBar">
         <item name="android:background">@null</item>
         <item name="android:icon">@drawable/ic_launcher</item>
+        <item name="titleTextStyle">@style/titleStyle</item>
+    </style>
+
+    <style name="titleStyle" parent="@style/TextAppearance.AppCompat.Widget.Base.ActionBar.Title">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 </resources>
