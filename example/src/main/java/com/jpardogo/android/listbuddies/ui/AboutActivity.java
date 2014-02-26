@@ -2,6 +2,7 @@ package com.jpardogo.android.listbuddies.ui;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,8 @@ public class AboutActivity extends BaseActivity {
         mBackground = mImageView;
         moveBackground();
         mTextView.setText(Html.fromHtml(getString(R.string.about_cody)));
+        mTextView.setMovementMethod(new LinkMovementMethod());
+
     }
 
     @Override
