@@ -19,11 +19,23 @@
     <string name="left">Left</string>
     <string name="reset">Reset</string>
     <string name="about">About</string>
-    <string name="about_copy">Listbuddies is an android library to achieve in an easy way, the behaviour of the home page in the Expedia app, with a pair of auto-scroll circular parallax ListViews.
-        \n\nCopyright 2013&#8211;2014 Javier Pardo de Santayana Gómez
-        \n\nMany thanks to the following source projects:
-        \n\nOkHttp and Piccaso\nby Square
-        \n\nButterKnife\nby Jake Wharton
-    </string>
+    <string name="about_cody"><![CDATA[
+        <a href="https://github.com/jpardogo/ListBuddies><i>ListBuddies</i></a>
+        is an Android library to achieve in an easy way, the behaviour of the home page
+        in the <a href="https://play.google.com/store/apps/details?id=com.expedia.bookings">
+        <i>Expedia app</i></a>, with a pair of auto-scroll circular parallax ListViews.<br><br>
+
+        Copyright 2013&ndash;2014 Javier Pardo de Santayana Gómez<br>
+        All Rights Reserved.<br>
+        <a href="https://github.com/jpardogo/ListBuddies/blob/master/LICENSE">Terms of Service</a>,<br><br>
+
+        Many thanks to these open source projects:<br><br>
+
+        <b><a href="http://square.github.io/okhttp/">OkHttp</a> and <a href="http://square.github.io/picasso/">Picasso</a>&nbsp;</b><br>
+        <i>by Square</i><br><br>
+
+        <b><a href="http://jakewharton.github.io/butterknife/">ButterKnife</a>&nbsp;</b><br>
+        <i>by Jake Wharton</i><br><br>
+    ]]></string>
     <string name="detail">Detail</string>
 </resources>

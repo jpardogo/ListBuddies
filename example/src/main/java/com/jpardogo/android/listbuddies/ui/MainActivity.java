@@ -20,14 +20,14 @@ import com.jpardogo.android.listbuddies.ui.fragments.ListBuddiesFragment;
 
 public class MainActivity extends ActionBarActivity implements CustomizeFragment.OnCustomizeListener {
 
-    private boolean isOpenActivitiesActivated = false;
+    private boolean isOpenActivitiesActivated = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            manageFragment(ListBuddiesFragment.newInstance(), FragmentTags.LIST_BUDDIES, false);
+            manageFragment(ListBuddiesFragment.newInstance(isOpenActivitiesActivated), FragmentTags.LIST_BUDDIES, false);
         }
     }
 

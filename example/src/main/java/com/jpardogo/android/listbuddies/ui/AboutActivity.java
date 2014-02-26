@@ -1,34 +1,33 @@
 package com.jpardogo.android.listbuddies.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
-import android.view.MenuItem;
+import android.text.Html;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.jpardogo.android.listbuddies.R;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by jpardogo on 23/02/2014.
  */
-public class AboutActivity extends ActionBarActivity {
+public class AboutActivity extends BaseActivity {
 
+    @InjectView(R.id.about_body)
+    TextView mTextView;
+    @InjectView(R.id.image)
+    ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        overridePendingTransition(0, 0);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+        ButterKnife.inject(this);
+        mBackground = mImageView;
+        moveBackground();
+        mTextView.setText(Html.fromHtml(getString(R.string.about_cody)));
     }
 
     @Override
@@ -37,3 +36,4 @@ public class AboutActivity extends ActionBarActivity {
         overridePendingTransition(0, 0);
     }
 }
+

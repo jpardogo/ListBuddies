@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.jpardogo.android.listbuddies.R;
 import com.jpardogo.android.listbuddies.adapters.CircularAdapter;
+import com.jpardogo.android.listbuddies.provider.ExtraArgumentKeys;
 import com.jpardogo.android.listbuddies.provider.ImagesUrls;
 import com.jpardogo.android.listbuddies.ui.DetailActivity;
 import com.jpardogo.listbuddies.lib.provider.ScrollConfigOptions;
@@ -26,14 +27,24 @@ import butterknife.InjectView;
 public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
 
-    private boolean mOpenActivities;
+    private boolean isOpenActivities;
     private CircularAdapter mAdapterLeft;
     private CircularAdapter mAdapterRight;
     @InjectView(R.id.listbuddies)
     ListBuddiesLayout mListBuddies;
 
-    public static ListBuddiesFragment newInstance() {
-        return new ListBuddiesFragment();
+    public static ListBuddiesFragment newInstance(boolean isOpenActivitiesActivated) {
+        ListBuddiesFragment fragment = new ListBuddiesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ExtraArgumentKeys.OPEN_ACTIVITES.toString(), isOpenActivitiesActivated);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        isOpenActivities = getArguments().getBoolean(ExtraArgumentKeys.OPEN_ACTIVITES.toString(), false);
     }
 
     @Override
@@ -50,7 +61,7 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
 
     @Override
     public void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id) {
-        if (mOpenActivities) {
+        if (isOpenActivities) {
             Intent intent = new Intent(getActivity(), DetailActivity.class);
             intent.putExtra(DetailActivity.EXTRA_URL, getImage(buddy, position));
             startActivity(intent);
@@ -109,7 +120,7 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
     public void setOpenActivities(Boolean openActivities) {
-        this.mOpenActivities = openActivities;
+        this.isOpenActivities = openActivities;
     }
 
     public void resetLayout() {

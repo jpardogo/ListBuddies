@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:listbuddies="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/santander_blurred"
-        android:scaleType="centerCrop" />
+        android:src="@drawable/santander2"
+        android:scaleType="matrix" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/about_copy"
-        android:textColor="@color/white"
-        android:textStyle="bold"
+        android:fitsSystemWindows="true"
         android:layout_gravity="center"
         android:layout_margin="@dimen/activity_vertical_margin"
-        android:padding="@dimen/standar_padding" />
+        android:clipToPadding="false">
 
-    <com.jpardogo.android.listbuddies.ui.views.DrawInsetsFrameLayout
-        android:id="@+id/insets_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        listbuddies:insetBackground="@color/inset" />
+        <TextView
+            android:id="@+id/about_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#afff"
+            android:textColorLink="#fff"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="18sp"
+            android:lineSpacingMultiplier="1.1" />
+    </ScrollView>
 </FrameLayout>
