@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jpardogo.android.listbuddies.R;
+import com.jpardogo.android.listbuddies.Utils.Utils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -28,10 +29,11 @@ public class AboutActivity extends BaseActivity {
         ButterKnife.inject(this);
         mBackground = mImageView;
         moveBackground();
-        mTextView.setText(Html.fromHtml(getString(R.string.about_cody)));
+        mTextView.setText(Html.fromHtml(getString(R.string.about_cody, Utils.getVersionName(this))));
         mTextView.setMovementMethod(new LinkMovementMethod());
 
     }
+
 
     @Override
     protected void onPause() {

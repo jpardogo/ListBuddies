@@ -16,6 +16,9 @@
 
 package com.jpardogo.android.listbuddies.Utils;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 
@@ -23,6 +26,8 @@ import android.os.Build.VERSION_CODES;
  * Class containing some static utility methods.
  */
 public class Utils {
+    private static final String VERSION_UNAVAILABLE = "N/A";
+
     private Utils() {
     }
 
@@ -53,5 +58,19 @@ public class Utils {
 
     public static boolean hasKitKat() {
         return Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT;
+    }
+
+    public static String getVersionName(Context context) {
+        // Get app version
+        PackageManager pm = context.getPackageManager();
+        String packageName = context.getPackageName();
+        String versionName;
+        try {
+            PackageInfo info = pm.getPackageInfo(packageName, 0);
+            versionName = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            versionName = VERSION_UNAVAILABLE;
+        }
+        return versionName;
     }
 }
