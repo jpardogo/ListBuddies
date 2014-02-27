@@ -17,9 +17,15 @@
         listbuddies:gap="@dimen/gap"
         listbuddies:listsDivider="@drawable/divider"
         listbuddies:listsDividerHeight="@dimen/divider_height"
-        listbuddies:fillGap="@color/frame"
+        listbuddies:gapColor="@color/frame"
         listbuddies:autoScrollFaster="right"
         listbuddies:scrollFaster="left" />
+
+    <!--In case we want to created a listBuddies layout dynamically then we need a container for it-->
+    <!--<FrameLayout-->
+    <!--android:id="@+id/listbuddies_container"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"/>-->
 
     <View
         android:layout_width="match_parent"

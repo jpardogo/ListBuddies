@@ -106,10 +106,10 @@ public class MainActivity extends ActionBarActivity implements CustomizeFragment
     }
 
     @Override
-    public void fillGap(int color) {
+    public void setGapColor(int color) {
         ListBuddiesFragment fragment = getListBuddiesFragment();
         if (fragment != null) {
-            fragment.fillGap(color);
+            fragment.setGapColor(color);
         }
     }
 

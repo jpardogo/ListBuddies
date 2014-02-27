@@ -190,6 +190,7 @@ public class CustomizeFragment extends Fragment {
                     break;
             }
         }
+
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
         }
@@ -207,7 +208,7 @@ public class CustomizeFragment extends Fragment {
                 case R.id.fillGapSpinner:
                     mFillGapSpinnerPosition = position;
                     value = mColorSpinnerSections.get(position).getColor(getActivity());
-                    mOnCustomizeListener.fillGap(value);
+                    mOnCustomizeListener.setGapColor(value);
                     break;
                 case R.id.autoScrollSpinner:
                     mAutoScrollSpinnerPosition = position;
@@ -255,7 +256,7 @@ public class CustomizeFragment extends Fragment {
 
         void setGap(int value);
 
-        void fillGap(int color);
+        void setGapColor(int color);
 
         void setDivider(Drawable drawable);
 
