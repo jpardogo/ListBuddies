@@ -387,7 +387,12 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     }
 
     private void performClick(ListView list) {
-        if (mDownView != null && (isUserInteracting || mSpeed == 0)) {
+        //In some occasions setOnListScrollListener-SCROLL_STATE_TOUCH_SCROLL
+        //doesn't get called when we perform a click, so we need to double check
+        if (!isUserInteracting) {
+            isUserInteracting = true;
+        }
+        if (mDownView != null || mSpeed == 0) {
             mDownView.setPressed(false);
             if (mItemBuddyListener != null) {
                 int buddy = 0;
