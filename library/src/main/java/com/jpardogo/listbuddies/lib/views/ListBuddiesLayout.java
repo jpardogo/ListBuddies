@@ -473,4 +473,13 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         MotionEvent event = MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis(), MotionEvent.ACTION_MOVE, 570, -1, 0);
         mScrollHelper.onTouch(mListViewLeft, event);
     }
+
+    public ListView getListViewLeft() {
+        return mListViewLeft;
+    }
+
+    public ListView getListViewRight() {
+        return mListViewRight;
+    }
+
 }
