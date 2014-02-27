@@ -18,6 +18,7 @@ import android.widget.ListView;
 import com.jpardogo.listbuddies.lib.R;
 import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapter;
 import com.jpardogo.listbuddies.lib.helpers.ListBuddiesAutoScrollHelper;
+import com.jpardogo.listbuddies.lib.provider.ScrollConfigOptions;
 
 /**
  * LinerLayout that contains 2 ListViews. This ListViews auto-scroll while the user is not interacting with them.
@@ -29,61 +30,69 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
     private static final long PRESS_DELAY = 100;
     private static final float CANCEL_CLICK_LIMIT = 8;
     public static final int DEFAULT_SPEED = 2;
-    public static int ATTR_NOT_SET = -1;
+    public static final int ATTR_NOT_SET = -1;
 
     private OnBuddyItemClickListener mItemBuddyListener;
-    private int[] mListViewCoords = new int[2];
-    private int mLastViewTouchId;
-    private int mDownPosition;
-    private int mChildCount;
-    private float mDownEventY;
     private ObservableListView mListViewLeft;
     private ObservableListView mListViewRight;
     private boolean mActionDown;
     private boolean isRightListEnabled = false;
     private boolean isLeftListEnabled = false;
     private boolean isUserInteracting = true;
-    private View mDownView;
-    private Rect mRect = new Rect();
-    private ListBuddiesAutoScrollHelper mScrollHelper;
-    private int mGap;
-    private int mGapColor;
-    private int mSpeed;
-    private int mSpeedLeft;
-    private int mSpeedRight;
-    private Drawable mDivider;
-    private int mDividerHeight;
     private boolean isAutoScrollLeftListFaster;
     private boolean isManualScrollLeftListFaster;
-    private ViewStub mViewStubGap;
+    private View mDownView;
     private View mGapView;
+    private ViewStub mViewStubGap;
+    private Rect mRect = new Rect();
+    private ListBuddiesAutoScrollHelper mScrollHelper;
+    private int[] mListViewCoords = new int[2];
+    private int mGap;
+    private int mGapColor;
+    private int mSpeed = DEFAULT_SPEED;
+    private int mSpeedLeft;
+    private int mSpeedRight;
+    private int mDividerHeight;
+    private int mLastViewTouchId;
+    private int mDownPosition;
+    private int mChildCount;
+    private float mDownEventY;
+    private Drawable mDivider;
+
+    public ListBuddiesLayout(Context context) {
+        super(context);
+        init(context);
+    }
 
     public ListBuddiesLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         setListBuddiesAttributes(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.listbuddies, this, true);
-        mListViewLeft = (ObservableListView) findViewById(R.id.list_left);
-        mListViewRight = (ObservableListView) findViewById(R.id.list_right);
-        mLastViewTouchId = mListViewRight.getId();
-        setViewParams();
-        setListeners();
-        setScrollHelpers();
-        startAutoScroll();
+        init(context);
+        applyViewParams();
     }
 
     private void setListBuddiesAttributes(Context context, AttributeSet attrs) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListBuddiesOptions, 0, 0);
         mGap = a.getDimensionPixelSize(R.styleable.ListBuddiesOptions_gap, getResources().getDimensionPixelSize(R.dimen.default_margin_between_lists));
         mSpeed = a.getInteger(R.styleable.ListBuddiesOptions_speed, DEFAULT_SPEED);
-        int scrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_autoScrollFaster, 1);
-        isAutoScrollLeftListFaster = scrollLeftListFaster == 1;
-        isManualScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster, scrollLeftListFaster) == 1;
-        calibrateSpeed();
+        int configOptionFasterList = a.getInteger(R.styleable.ListBuddiesOptions_autoScrollFaster, ScrollConfigOptions.LEFT.getConfigValue());
+        isAutoScrollLeftListFaster = configOptionFasterList == ScrollConfigOptions.LEFT.getConfigValue();
+        isManualScrollLeftListFaster = a.getInteger(R.styleable.ListBuddiesOptions_scrollFaster, configOptionFasterList) == ScrollConfigOptions.LEFT.getConfigValue();
         mDivider = a.getDrawable(R.styleable.ListBuddiesOptions_listsDivider);
         mDividerHeight = a.getDimensionPixelSize(R.styleable.ListBuddiesOptions_listsDividerHeight, ATTR_NOT_SET);
-        mGapColor = a.getColor(R.styleable.ListBuddiesOptions_fillGap, ATTR_NOT_SET);
+        mGapColor = a.getColor(R.styleable.ListBuddiesOptions_gapColor, ATTR_NOT_SET);
         a.recycle();
+    }
+
+    private void init(Context context) {
+        LayoutInflater.from(context).inflate(R.layout.listbuddies, this, true);
+        mListViewLeft = (ObservableListView) findViewById(R.id.list_left);
+        mListViewRight = (ObservableListView) findViewById(R.id.list_right);
+        mLastViewTouchId = mListViewRight.getId();
+        calibrateSpeed();
+        setListeners();
+        setScrollHelpers();
+        startAutoScroll();
     }
 
     private void calibrateSpeed() {
@@ -98,83 +107,6 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         } else {
             mSpeedLeft = mSpeed / 2;
             mSpeedRight = mSpeed;
-        }
-    }
-
-    private void setViewParams() {
-        setGap();
-        setDividerAndHeight(mDivider, mDividerHeight);
-    }
-
-    private void setGap() {
-        if (mGapColor != ATTR_NOT_SET) {
-            fillGap();
-            setGapColor();
-        } else {
-            emptyGap();
-        }
-    }
-
-    private void setGapColor() {
-        if (mGapView != null && mGapColor != ATTR_NOT_SET) {
-            mGapView.setBackgroundColor(mGapColor);
-        }
-    }
-
-    private void emptyGap() {
-        setLeftListMargin(mGap);
-        if (mGapView != null) {
-            mGapView.setVisibility(View.GONE);
-        }
-    }
-
-    private void setLeftListMargin(int marginRigth) {
-        if (mListViewLeft != null) {
-            LinearLayout.LayoutParams params = (LayoutParams) mListViewLeft.getLayoutParams();
-            params.setMargins(0, 0, marginRigth, 0);
-            mListViewLeft.setLayoutParams(params);
-        }
-    }
-
-    private void fillGap() {
-        if (mViewStubGap == null) {
-            mViewStubGap = (ViewStub) findViewById(R.id.gap);
-        }
-        if (mGapView == null) {
-            mGapView = mViewStubGap.inflate();
-        }
-
-        setLeftListMargin(0);
-        setGapWidth(mGap);
-        if (mGapView != null) {
-            mGapView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void setGapWidth(int width) {
-        if (mGapView != null) {
-            LinearLayout.LayoutParams params = (LayoutParams) mGapView.getLayoutParams();
-            params.width = width;
-            mGapView.setLayoutParams(params);
-        }
-    }
-
-    private void setHeightDivider(int dividerHeight) {
-        if (dividerHeight > ATTR_NOT_SET) {
-            mListViewLeft.setDividerHeight(dividerHeight);
-            mListViewRight.setDividerHeight(dividerHeight);
-        }
-    }
-
-    private void setDividerAndHeight(Drawable drawable, int dividerHeight) {
-        setListsDivider(drawable);
-        setHeightDivider(dividerHeight);
-    }
-
-    private void setListsDivider(Drawable drawable) {
-        if (drawable != null) {
-            mListViewLeft.setDivider(drawable);
-            mListViewRight.setDivider(drawable);
         }
     }
 
@@ -211,6 +143,15 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         });
     }
 
+    private void forceScrollIfNeeded(boolean isListEnabled) {
+        if (isUserInteracting && isListEnabled) {
+            isUserInteracting = false;
+            if (!mActionDown) {
+                forceScroll();
+            }
+        }
+    }
+
     private boolean isOtherListEnable(boolean isLeftList) {
         boolean result;
         if (isLeftList) {
@@ -221,6 +162,13 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         return result;
     }
 
+    private void setListState(boolean isEnabled, boolean isLeftList) {
+        if (isLeftList) {
+            isLeftListEnabled = isEnabled;
+        } else {
+            isRightListEnabled = isEnabled;
+        }
+    }
 
     private void setScrollHelpers() {
         mScrollHelper = new ListBuddiesAutoScrollHelper(mListViewLeft) {
@@ -249,14 +197,6 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         return mSpeed != 0;
     }
 
-    private void setListState(boolean isEnabled, boolean isLeftList) {
-        if (isLeftList) {
-            isLeftListEnabled = isEnabled;
-        } else {
-            isRightListEnabled = isEnabled;
-        }
-    }
-
     private void startAutoScroll() {
         mListViewLeft.post(new Runnable() {
             @Override
@@ -266,20 +206,86 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         });
     }
 
-    private void forceScrollIfNeeded(boolean isListEnabled) {
-        if (isUserInteracting && isListEnabled) {
-            isUserInteracting = false;
-            if (!mActionDown) {
-                forceScroll();
-            }
+    private void forceScroll() {
+        MotionEvent event = MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis(), MotionEvent.ACTION_MOVE, 570, -1, 0);
+        mScrollHelper.onTouch(mListViewLeft, event);
+    }
+
+    private void applyViewParams() {
+        setGap();
+        setDividerAndHeight(mDivider, mDividerHeight);
+    }
+
+    private void setDividerAndHeight(Drawable drawable, int dividerHeight) {
+        setListsDivider(drawable);
+        setHeightDivider(dividerHeight);
+    }
+
+    private void setListsDivider(Drawable drawable) {
+        if (drawable != null) {
+            mListViewLeft.setDivider(drawable);
+            mListViewRight.setDivider(drawable);
         }
     }
 
-    public void setAdapters(CircularLoopAdapter adapter, CircularLoopAdapter adapter2) {
-        mListViewLeft.setAdapter(adapter);
-        mListViewRight.setAdapter(adapter2);
-        mListViewLeft.setSelection(Integer.MAX_VALUE / 2);
-        mListViewRight.setSelection(Integer.MAX_VALUE / 2);
+    private void setHeightDivider(int dividerHeight) {
+        if (dividerHeight > ATTR_NOT_SET) {
+            mListViewLeft.setDividerHeight(dividerHeight);
+            mListViewRight.setDividerHeight(dividerHeight);
+        }
+    }
+
+    private void setGap() {
+        if (mGapColor != ATTR_NOT_SET) {
+            createGap();
+            setGapColor();
+        } else {
+            emptyGap();
+        }
+    }
+
+    private void setGapColor() {
+        if (mGapView != null && mGapColor != ATTR_NOT_SET) {
+            mGapView.setBackgroundColor(mGapColor);
+        }
+    }
+
+    private void emptyGap() {
+        setLeftListMargin(mGap);
+        if (mGapView != null) {
+            mGapView.setVisibility(View.GONE);
+        }
+    }
+
+    private void setLeftListMargin(int marginRigth) {
+        if (mListViewLeft != null) {
+            LinearLayout.LayoutParams params = (LayoutParams) mListViewLeft.getLayoutParams();
+            params.setMargins(0, 0, marginRigth, 0);
+            mListViewLeft.setLayoutParams(params);
+        }
+    }
+
+    private void createGap() {
+        if (mViewStubGap == null) {
+            mViewStubGap = (ViewStub) findViewById(R.id.gap);
+        }
+        if (mGapView == null) {
+            mGapView = mViewStubGap.inflate();
+        }
+
+        setLeftListMargin(0);
+        setGapWidth(mGap);
+        if (mGapView != null) {
+            mGapView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setGapWidth(int width) {
+        if (mGapView != null) {
+            LinearLayout.LayoutParams params = (LayoutParams) mGapView.getLayoutParams();
+            params.width = width;
+            mGapView.setLayoutParams(params);
+        }
     }
 
     @Override
@@ -306,38 +312,20 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         startClickSelection(event, list, event.getY());
     }
 
-    private void actionUp(ListView list) {
-        mActionDown = false;
-        performClick(list);
-    }
-
-    private void actionMove(MotionEvent event) {
-        cancelClick(event.getY());
-    }
-
-    private void cancelClick(float eventY) {
-        if (mDownView != null && (Math.abs(mDownEventY - eventY) > CANCEL_CLICK_LIMIT)) {
-            mDownView.setPressed(false);
-            mDownView = null;
-        }
-    }
-
-    private void performClick(ListView list) {
-        if (mDownView != null && (isUserInteracting || mSpeed == 0)) {
-            mDownView.setPressed(false);
-            if (mItemBuddyListener != null) {
-                int buddy = 0;
-                if (list.getId() != mListViewLeft.getId()) {
-                    buddy = 1;
-                }
-                int position = getPosition(list, mDownPosition);
-                mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, position, mDownView.getId());
+    /**
+     * Each time we touch the opposite ListView than the last one we have selected
+     * we need to activate it as the enable one
+     */
+    private void toogleListView(View v) {
+        if (mLastViewTouchId != v.getId()) {
+            if (mLastViewTouchId == mListViewLeft.getId()) {
+                isLeftListEnabled = true;
+                isRightListEnabled = false;
+            } else {
+                isLeftListEnabled = false;
+                isRightListEnabled = true;
             }
         }
-    }
-
-    private int getPosition(ListView list, int position) {
-        return ((CircularLoopAdapter) list.getAdapter()).getCircularPosition(position);
     }
 
     private void startClickSelection(MotionEvent event, ListView list, float eventY) {
@@ -382,6 +370,40 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         }
     }
 
+    private void actionUp(ListView list) {
+        mActionDown = false;
+        performClick(list);
+    }
+
+    private void actionMove(MotionEvent event) {
+        cancelClick(event.getY());
+    }
+
+    private void cancelClick(float eventY) {
+        if (mDownView != null && (Math.abs(mDownEventY - eventY) > CANCEL_CLICK_LIMIT)) {
+            mDownView.setPressed(false);
+            mDownView = null;
+        }
+    }
+
+    private void performClick(ListView list) {
+        if (mDownView != null && (isUserInteracting || mSpeed == 0)) {
+            mDownView.setPressed(false);
+            if (mItemBuddyListener != null) {
+                int buddy = 0;
+                if (list.getId() != mListViewLeft.getId()) {
+                    buddy = 1;
+                }
+                int position = getPosition(list, mDownPosition);
+                mItemBuddyListener.onBuddyItemClicked(list, mDownView, buddy, position, mDownView.getId());
+            }
+        }
+    }
+
+    private int getPosition(ListView list, int position) {
+        return ((CircularLoopAdapter) list.getAdapter()).getCircularPosition(position);
+    }
+
     /**
      * Receives the distance scroll on listView.
      */
@@ -409,71 +431,71 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         return speed;
     }
 
-    /**
-     * Each time we touch the opposite ListView than the last one we have selected
-     * we need to activate it as the enable one
-     */
-    private void toogleListView(View v) {
-        if (mLastViewTouchId != v.getId()) {
-            if (mLastViewTouchId == mListViewLeft.getId()) {
-                isLeftListEnabled = true;
-                isRightListEnabled = false;
-            } else {
-                isLeftListEnabled = false;
-                isRightListEnabled = true;
-            }
-        }
-    }
-
-    public void setOnItemClickListener(OnBuddyItemClickListener listener) {
-        mItemBuddyListener = listener;
-    }
-
-    public void setGap(int value) {
-        mGap = value;
-        setGap();
-    }
-
-    public void setSpeed(int value) {
-        mSpeed = value;
-        calibrateSpeed();
-    }
-
-    public void setDividerHeight(int value) {
-        mDividerHeight = value;
-        setDividerAndHeight(mDivider, value);
-    }
-
-    public void setDivider(Drawable drawable) {
-        mDivider = drawable;
-        setDividerAndHeight(drawable, mDividerHeight);
-    }
-
-
-    public void fillGap(int color) {
-        mGapColor = color;
-        setGap();
-    }
-
-    public void setAutoScrollFaster(int option) {
-        isAutoScrollLeftListFaster = option == 1;
-        calibrateSpeed();
-    }
-
-    public void setManualScrollFaster(int option) {
-        isManualScrollLeftListFaster = option == 1;
-    }
-
     public interface OnBuddyItemClickListener {
         //Buddy corresponde with the list (0-left, 1-right)
         void onBuddyItemClicked(AdapterView<?> parent, View view, int buddy, int position, long id);
     }
 
-    private void forceScroll() {
-        MotionEvent event = MotionEvent.obtain(System.currentTimeMillis(), System.currentTimeMillis(), MotionEvent.ACTION_MOVE, 570, -1, 0);
-        mScrollHelper.onTouch(mListViewLeft, event);
+    /**
+     * Public setters
+     */
+
+    public void setOnItemClickListener(OnBuddyItemClickListener listener) {
+        mItemBuddyListener = listener;
     }
 
+    public ListBuddiesLayout setGap(int value) {
+        mGap = value;
+        setGap();
+        return this;
+    }
+
+    public ListBuddiesLayout setSpeed(int value) {
+        mSpeed = value;
+        calibrateSpeed();
+        return this;
+    }
+
+    public ListBuddiesLayout setDividerHeight(int value) {
+        mDividerHeight = value;
+        setDividerAndHeight(mDivider, value);
+        return this;
+    }
+
+    public ListBuddiesLayout setDivider(Drawable drawable) {
+        mDivider = drawable;
+        setDividerAndHeight(drawable, mDividerHeight);
+        return this;
+    }
+
+
+    public ListBuddiesLayout setGapColor(int color) {
+        mGapColor = color;
+        setGap();
+        return this;
+    }
+
+    public ListBuddiesLayout setAutoScrollFaster(int option) {
+        isAutoScrollLeftListFaster = option == 1;
+        calibrateSpeed();
+        return this;
+    }
+
+    public ListBuddiesLayout setManualScrollFaster(int option) {
+        isManualScrollLeftListFaster = option == 1;
+        return this;
+    }
+
+    public void setAdapters(CircularLoopAdapter adapter, CircularLoopAdapter adapter2) {
+        mListViewLeft.setAdapter(adapter);
+        mListViewRight.setAdapter(adapter2);
+        mListViewLeft.setSelection(Integer.MAX_VALUE / 2);
+        mListViewRight.setSelection(Integer.MAX_VALUE / 2);
+    }
+
+    /**
+     * Public getters
+     */
     public ListView getListViewLeft() {
         return mListViewLeft;
     }
@@ -482,4 +504,23 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         return mListViewRight;
     }
 
+    public int getGapColor() {
+        return mGapColor;
+    }
+
+    public int getSpeed() {
+        return mSpeed;
+    }
+
+    public int getGap() {
+        return mGap;
+    }
+
+    public int getDividerHeight() {
+        return mDividerHeight;
+    }
+
+    public Drawable getDivider() {
+        return mDivider;
+    }
 }

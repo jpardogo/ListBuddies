@@ -26,7 +26,8 @@ import butterknife.InjectView;
 
 public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.OnBuddyItemClickListener {
     private static final String TAG = ListBuddiesFragment.class.getSimpleName();
-
+    int mMarginDefault;
+    int[] mScrollConfig;
     private boolean isOpenActivities;
     private CircularAdapter mAdapterLeft;
     private CircularAdapter mAdapterRight;
@@ -45,6 +46,8 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         isOpenActivities = getArguments().getBoolean(ExtraArgumentKeys.OPEN_ACTIVITES.toString(), false);
+        mMarginDefault = getResources().getDimensionPixelSize(com.jpardogo.listbuddies.lib.R.dimen.default_margin_between_lists);
+        mScrollConfig = getResources().getIntArray(R.attr.scrollFaster);
     }
 
     @Override
@@ -52,11 +55,22 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         ButterKnife.inject(this, rootView);
+
+        //If we do this we need to uncomment the container on the xml layout
+        //createListBuddiesLayoutDinamically(rootView);
+
         mAdapterLeft = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_small), ImagesUrls.imageUrls_left);
         mAdapterRight = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_tall), ImagesUrls.imageUrls_right);
         mListBuddies.setAdapters(mAdapterLeft, mAdapterRight);
         mListBuddies.setOnItemClickListener(this);
         return rootView;
+    }
+
+    private void createListBuddiesLayoutDinamically(View rootView) {
+        mListBuddies = new ListBuddiesLayout(getActivity());
+        resetLayout();
+        //Once the container is created we can add the ListViewLayout into it
+        //((FrameLayout)rootView.findViewById(R.id.<container_id>)).addView(mListBuddies);
     }
 
     @Override
@@ -103,8 +117,8 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
         mListBuddies.setDividerHeight(value);
     }
 
-    public void fillGap(int color) {
-        mListBuddies.fillGap(color);
+    public void setGapColor(int color) {
+        mListBuddies.setGapColor(color);
     }
 
     public void setAutoScrollFaster(int option) {
@@ -124,14 +138,13 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
     public void resetLayout() {
-        int marginDefault = getResources().getDimensionPixelSize(com.jpardogo.listbuddies.lib.R.dimen.default_margin_between_lists);
-        int[] scrollConfig = getResources().getIntArray(R.attr.scrollFaster);
-        mListBuddies.setGap(marginDefault);
-        mListBuddies.setSpeed(ListBuddiesLayout.DEFAULT_SPEED);
-        mListBuddies.setDividerHeight(marginDefault);
-        mListBuddies.fillGap(getResources().getColor(R.color.frame));
-        mListBuddies.setAutoScrollFaster(scrollConfig[ScrollConfigOptions.RIGHT.getConfigValue()]);
-        mListBuddies.setManualScrollFaster(scrollConfig[ScrollConfigOptions.LEFT.getConfigValue()]);
-        mListBuddies.setDivider(getResources().getDrawable(R.drawable.divider));
+
+        mListBuddies.setGap(mMarginDefault)
+                .setSpeed(ListBuddiesLayout.DEFAULT_SPEED)
+                .setDividerHeight(mMarginDefault)
+                .setGapColor(getResources().getColor(R.color.frame))
+                .setAutoScrollFaster(mScrollConfig[ScrollConfigOptions.RIGHT.getConfigValue()])
+                .setManualScrollFaster(mScrollConfig[ScrollConfigOptions.LEFT.getConfigValue()])
+                .setDivider(getResources().getDrawable(R.drawable.divider));
     }
 }
