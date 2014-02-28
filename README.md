@@ -3,10 +3,12 @@ ListBuddies
 
 Android library of a pair of auto-scroll circular parallax ListViews like the ones on the expedia app home page.
 
-A video example of this library is on this [youtube video][1].
+A video example of this library is on this [youtube video][1].  
+And the [demo app][2] can be found on the play store.
 
 <p align="center">
  <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/screenshot_listbuddies_1.png"/>
+ <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/google_play%20badge.png"/>
 </p>
 
 I would appreciate any kind of help to improve this library. Thanks
@@ -14,7 +16,7 @@ I would appreciate any kind of help to improve this library. Thanks
 Usage
 -----
 
-You must declare the following view in you on your xml layout:
+You must declare the following view in your xml layout:
 
 ```xml
 <com.jpardogo.listbuddies.lib.views.ListBuddiesLayout 
@@ -24,7 +26,7 @@ You must declare the following view in you on your xml layout:
     android:layout_height="match_parent"/>
 ```
 
-There are a bunch of optional custom attributes on the layout:
+There are a bunch of optional custom attributes:
 
 ```xml
 <com.jpardogo.listbuddies.lib.views.ListBuddiesLayout
@@ -34,18 +36,33 @@ There are a bunch of optional custom attributes on the layout:
         android:layout_height="match_parent"
         listbuddies:speed="2"
         listbuddies:gap="@dimen/gap"
-        listbuddies:fillGap="@color/frame"
+        listbuddies:gapColor="@color/frame"
         listbuddies:listsDivider="@drawable/divider"
         listbuddies:listsDividerHeight="@dimen/divider_height"
         listbuddies:autoScrollFaster="right"
         listbuddies:scrollFaster="left"/>
 ```
 
+If you prefere to create it dinamically use:
+
+```java
+    
+    ListBuddiesLayout listBuddies = new ListBuddiesLayout(this);
+    listBuddies.setGap(mMarginDefault)
+                .setSpeed(ListBuddiesLayout.DEFAULT_SPEED)
+                .setDividerHeight(mMarginDefault)
+                .setGapColor(getResources().getColor(R.color.frame))
+                .setAutoScrollFaster(mScrollConfig[ScrollConfigOptions.RIGHT.getConfigValue()])
+                .setManualScrollFaster(mScrollConfig[ScrollConfigOptions.LEFT.getConfigValue()])
+                .setDivider(getResources().getDrawable(R.drawable.divider));
+    ((FrameLayout)findViewById(R.id.<container_id>)).addView(listBuddies)
+```
+
 ######Attributes
 
 * `speed`: Sets the auto scroll speed (integer). 0 - no autoScroll
 * `gap`: Space between the lists, the default gap is 3dp (@dimen/default_margin_between_lists).
-* `fillGap`: Defines the color of the gap, if it is not set the gap is transparent
+* `gapColor`: Defines the color of the gap, if it is not set the gap is transparent
 * `listDivider`: Defines the lists dividers.
 * `listsDividerHeight`: Divider´s height.
 * `autoScrollFaster`: Indicate the ListView that will be faster on the parrallax effect during autoScroll. right/left.
@@ -185,4 +202,5 @@ License
     limitations under the License.
     
 [1]: http://youtu.be/6L7t_5mYTgM
-[2]: http://goo.gl/rR0TkY
+[2]: http://www.google.com
+
