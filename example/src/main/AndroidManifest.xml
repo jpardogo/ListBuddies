@@ -23,7 +23,6 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
@@ -35,7 +34,6 @@
 
         <activity
             android:name="com.jpardogo.android.listbuddies.ui.DetailActivity"
-            android:screenOrientation="portrait"
             android:parentActivityName="com.jpardogo.android.listbuddies.ui.MainActivity"
             android:label="@string/detail"
             android:theme="@style/BaseActivity.Theme">
@@ -46,7 +44,6 @@
 
         <activity
             android:name="com.jpardogo.android.listbuddies.ui.AboutActivity"
-            android:screenOrientation="portrait"
             android:parentActivityName="com.jpardogo.android.listbuddies.ui.MainActivity"
             android:label="@string/about"
             android:theme="@style/BaseActivity.Theme">
