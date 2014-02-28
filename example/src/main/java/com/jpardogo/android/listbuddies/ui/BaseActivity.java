@@ -3,8 +3,10 @@ package com.jpardogo.android.listbuddies.ui;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ImageView;
@@ -31,7 +33,6 @@ public class BaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(0, 0);
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     protected void moveBackground() {
@@ -64,7 +65,7 @@ public class BaseActivity extends ActionBarActivity {
         mMatrix.mapRect(mDisplayRect);
     }
 
-
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void animate(float from, float to) {
         mCurrentAnimator = ValueAnimator.ofFloat(from, to);
         mCurrentAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
