@@ -5,8 +5,7 @@
         android:id="@+id/action_customize"
         android:showAsAction="ifRoom"
         android:title="@string/customize"
-        android:icon="@drawable/ic_action_customize"
-        android:checkable="true" />
+        android:icon="@drawable/ic_action_customize" />
 
     <item android:id="@+id/menu">
 
