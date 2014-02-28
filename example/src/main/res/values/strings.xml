@@ -20,8 +20,8 @@
     <string name="reset">Reset</string>
     <string name="about">About</string>
     <string name="about_cody"><![CDATA[
-        <a href="https://github.com/jpardogo/ListBuddies><i>ListBuddies</i></a>
-        is an Android library to achieve in an easy way, the behaviour of the home page
+        Demo app for <a href="https://github.com/jpardogo/ListBuddies><i>ListBuddies</i></a>.
+        Android library to achieve in an easy way, the behaviour of the home page
         in the <a href="https://play.google.com/store/apps/details?id=com.expedia.bookings">
         <i>Expedia app</i></a>, with a pair of auto-scroll circular parallax ListViews.<br><br>
 
