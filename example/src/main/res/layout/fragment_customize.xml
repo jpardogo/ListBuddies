@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/inset"
-    android:layout_marginTop="@dimen/status_plus_action_bars_height">
+    android:layout_marginTop="@dimen/margin_top_customization_fragment">
 
     <LinearLayout
         android:layout_width="match_parent"

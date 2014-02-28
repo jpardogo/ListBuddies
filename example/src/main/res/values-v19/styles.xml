@@ -6,11 +6,10 @@
     <style name="TranslucentTheme" parent="Theme.AppCompat">
         <item name="android:actionBarStyle">@style/TranslucentActionBar</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:spinnerStyle">@style/SpinnerAppTheme</item>
         <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemAppTheme</item>
     </style>
 
-    <style name="BaseActivity.Theme" parent="TranslucentTheme">
-        <item name="android:displayOptions">homeAsUp|showTitle|showHome</item>
-    </style>
 </resources>

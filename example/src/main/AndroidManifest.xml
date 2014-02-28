@@ -26,7 +26,7 @@
             android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:launchMode="singleTop">
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -37,7 +37,8 @@
             android:name="com.jpardogo.android.listbuddies.ui.DetailActivity"
             android:screenOrientation="portrait"
             android:parentActivityName="com.jpardogo.android.listbuddies.ui.MainActivity"
-            android:label="@string/detail">
+            android:label="@string/detail"
+            android:theme="@style/BaseActivity.Theme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.jpardogo.android.listbuddies.ui.MainActivity" />
@@ -47,7 +48,8 @@
             android:name="com.jpardogo.android.listbuddies.ui.AboutActivity"
             android:screenOrientation="portrait"
             android:parentActivityName="com.jpardogo.android.listbuddies.ui.MainActivity"
-            android:label="@string/about">
+            android:label="@string/about"
+            android:theme="@style/BaseActivity.Theme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.jpardogo.android.listbuddies.ui.MainActivity" />

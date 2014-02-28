@@ -1,0 +1,5 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!--@android:dimen/navigation_bar_height(48dp) + @android:dimen/status_bar_height(25dp)-->
+    <dimen name="margin_top_customization_fragment">73dp</dimen>
+</resources>
