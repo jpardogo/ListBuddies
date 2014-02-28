@@ -1,8 +1,12 @@
 package com.jpardogo.android.listbuddies.ui;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,6 +38,21 @@ public class AboutActivity extends BaseActivity {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (Utils.hasHoneycomb()) {
+            View demoContainerView = findViewById(R.id.image);
+            demoContainerView.setAlpha(0);
+            ViewPropertyAnimator animator = demoContainerView.animate();
+            animator.alpha(1);
+            if (Utils.hasICS()) {
+                animator.setStartDelay(250);
+            }
+            animator.setDuration(1000);
+        }
+    }
 
     @Override
     protected void onPause() {
