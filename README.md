@@ -8,7 +8,9 @@ And the [demo app][2] can be found on the play store.
 
 <p align="center">
  <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/screenshot_listbuddies_1.png"/>
- <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/google_play%20badge.png"/>
+ <a href="https://play.google.com/store/apps/details?id=com.jpardogo.android.listbuddies">
+    <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/google_play%20badge.png"/>
+ </a>
 </p>
 
 I would appreciate any kind of help to improve this library. Thanks
@@ -202,5 +204,5 @@ License
     limitations under the License.
     
 [1]: http://youtu.be/6L7t_5mYTgM
-[2]: http://www.google.com
+[2]: https://play.google.com/store/apps/details?id=com.jpardogo.android.listbuddies
 
