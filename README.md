@@ -7,7 +7,7 @@ A video example of this library is on this [youtube video][1].
 And the [demo app][2] can be found on the play store.
 
 <p align="center">
- <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/screenshot_listbuddies_1.png"/>
+ <img height=393 width=200 src="https://raw.github.com/jpardogo/ListBuddies/master/art/screenshot_listbuddies_2.png"/>
  <a href="https://play.google.com/store/apps/details?id=com.jpardogo.android.listbuddies">
     <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/google_play%20badge.png"/>
  </a>
@@ -203,6 +203,6 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
     
-[1]: http://youtu.be/6L7t_5mYTgM
+[1]: https://www.youtube.com/watch?v=jgyMqlm_iDI
 [2]: https://play.google.com/store/apps/details?id=com.jpardogo.android.listbuddies
 
