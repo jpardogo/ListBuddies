@@ -18,6 +18,8 @@ public abstract class CircularLoopAdapter extends BaseAdapter {
      */
     @Override
     public int getCount() {
+        //if you don't do that and the adapter has nothing yet,you will get exception.
+        if (getCircularCount()==0) return 0;
         return Integer.MAX_VALUE;
     }
 
@@ -30,6 +32,8 @@ public abstract class CircularLoopAdapter extends BaseAdapter {
      * @return - position that we actually wanna take from our list
      */
     public int getCircularPosition(int position) {
+        //if you don't do that,you will get diver by zero exception.
+        if (getCircularCount()==0) return 0;
         return position % getCircularCount();
     }
 
