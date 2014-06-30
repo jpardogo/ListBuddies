@@ -392,7 +392,7 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         if (!isUserInteracting) {
             isUserInteracting = true;
         }
-        if (mDownView != null || mSpeed == 0) {
+        if (mDownView != null || (mSpeed == 0 && mDownView != null)) {
             mDownView.setPressed(false);
             if (mItemBuddyListener != null) {
                 int buddy = 0;
