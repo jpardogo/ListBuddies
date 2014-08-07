@@ -12,24 +12,19 @@ import com.jpardogo.listbuddies.lib.adapters.CircularLoopAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 public class CircularAdapter extends CircularLoopAdapter {
     private static final String TAG = CircularAdapter.class.getSimpleName();
 
-    private ArrayList<String> mItems = new ArrayList<String>();
+    private List<String> mItems = new ArrayList<String>();
     private Context mContext;
     private int mRowHeight;
 
-    public CircularAdapter(Context context, int rowHeight, String[] imagesUrl) {
+    public CircularAdapter(Context context, int rowHeight, List<String> imagesUrl) {
         mContext = context;
         mRowHeight = rowHeight;
-        initArray(imagesUrl);
-    }
-
-    private void initArray(String[] imageUrls) {
-        mItems.clear();
-        Collections.addAll(mItems, imageUrls);
+        mItems = imagesUrl;
     }
 
     @Override

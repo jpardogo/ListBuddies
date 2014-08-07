@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,6 +18,10 @@ import com.jpardogo.android.listbuddies.provider.ImagesUrls;
 import com.jpardogo.android.listbuddies.ui.DetailActivity;
 import com.jpardogo.listbuddies.lib.provider.ScrollConfigOptions;
 import com.jpardogo.listbuddies.lib.views.ListBuddiesLayout;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -33,6 +36,8 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     private CircularAdapter mAdapterRight;
     @InjectView(R.id.listbuddies)
     ListBuddiesLayout mListBuddies;
+    private List<String> mImagesLeft = new ArrayList<String>();
+    private List<String> mImagesRight = new ArrayList<String>();
 
     public static ListBuddiesFragment newInstance(boolean isOpenActivitiesActivated) {
         ListBuddiesFragment fragment = new ListBuddiesFragment();
@@ -58,9 +63,10 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
 
         //If we do this we need to uncomment the container on the xml layout
         //createListBuddiesLayoutDinamically(rootView);
-
-        mAdapterLeft = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_small), ImagesUrls.imageUrls_left);
-        mAdapterRight = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_tall), ImagesUrls.imageUrls_right);
+        mImagesLeft.addAll(Arrays.asList(ImagesUrls.imageUrls_left));
+        mImagesRight.addAll(Arrays.asList(ImagesUrls.imageUrls_right));
+        mAdapterLeft = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_small), mImagesLeft);
+        mAdapterRight = new CircularAdapter(getActivity(), getResources().getDimensionPixelSize(R.dimen.item_height_tall), mImagesRight);
         mListBuddies.setAdapters(mAdapterLeft, mAdapterRight);
         mListBuddies.setOnItemClickListener(this);
         return rootView;
@@ -87,22 +93,6 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
 
     private String getImage(int buddy, int position) {
         return buddy == 0 ? ImagesUrls.imageUrls_left[position] : ImagesUrls.imageUrls_right[position];
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_open_activities:
-                if (item.isChecked()) {
-                    item.setChecked(false);
-                } else {
-                    item.setChecked(true);
-                }
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     public void setGap(int value) {
@@ -138,7 +128,6 @@ public class ListBuddiesFragment extends Fragment implements ListBuddiesLayout.O
     }
 
     public void resetLayout() {
-
         mListBuddies.setGap(mMarginDefault)
                 .setSpeed(ListBuddiesLayout.DEFAULT_SPEED)
                 .setDividerHeight(mMarginDefault)
