@@ -31,10 +31,11 @@ android {
 
 dependencies {
     compile libraries.android_support
-    compile 'com.android.support:appcompat-v7:19.0.0'
-    compile 'com.squareup.picasso:picasso:2.1.1'
-    compile 'com.jakewharton:butterknife:4.0.1'
-    compile 'com.squareup.okhttp:okhttp:1.3.0'
+    compile 'com.android.support:appcompat-v7:20.0.0'
+    compile 'com.squareup.picasso:picasso:2.3.3'
+    compile 'com.jakewharton:butterknife:5.1.2'
+    compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.0.0'
     compile project(':library')
 }
 
