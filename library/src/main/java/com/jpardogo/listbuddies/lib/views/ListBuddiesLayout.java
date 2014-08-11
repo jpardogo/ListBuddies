@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.widget.AutoScrollHelper;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -93,6 +94,9 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         setListeners();
         setScrollHelpers();
         startAutoScroll();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setMotionEventSplittingEnabled(false);
+        }
     }
 
     private void calibrateSpeed() {
