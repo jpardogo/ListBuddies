@@ -162,6 +162,8 @@ Including in your project
 
 You can either add the library to your application as a library project or add the following dependency to your build.gradle:
 
+https://maven-badges.herokuapp.com/maven-central/com.jpardogo.listbuddies/library/badge.(svg|png)?style={style}
+
 ```groovy
 dependencies {
     compile 'com.jpardogo.listbuddies:library:(latest version)'
