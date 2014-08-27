@@ -33,7 +33,7 @@ public class ObservableListView extends ListView {
     }
 
     public static interface ListViewObserverDelegate {
-        public void onListScroll(View view, float deltaY);
+        public void onListScroll(ListView listView, float deltaY);
     }
 
 

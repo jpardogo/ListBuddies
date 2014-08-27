@@ -178,8 +178,10 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
         mScrollHelper = new ListBuddiesAutoScrollHelper(mListViewLeft) {
             @Override
             public void scrollTargetBy(int deltaX, int deltaY) {
-                mListViewLeft.smoothScrollBy(mSpeedLeft, 0);
-                mListViewRight.smoothScrollBy(mSpeedRight, 0);
+                mListViewLeft.setSelectionFromTop(mListViewLeft.getFirstVisiblePosition(), mListViewLeft.getChildAt(0).getTop() - mSpeedLeft);
+                mListViewRight.setSelectionFromTop(mListViewRight.getFirstVisiblePosition(), mListViewRight.getChildAt(0).getTop() + mSpeedRight);
+//                mListViewLeft.smoothScrollBy(mSpeedLeft, 0);
+//                mListViewRight.smoothScrollBy(mSpeedRight, 0);
             }
 
             @Override
@@ -417,15 +419,22 @@ public class ListBuddiesLayout extends LinearLayout implements View.OnTouchListe
      * Receives the distance scroll on listView.
      */
     @Override
-    public void onListScroll(View view, float deltaY) {
+    public void onListScroll(ListView listView, float deltaY) {
         int speed;
-        if (view.getId() == mListViewLeft.getId() && !isLeftListEnabled) {
+        View child;
+        if (listView.getId() == mListViewLeft.getId() && !isLeftListEnabled) {
             speed = getSpeed(false, deltaY);
-
-            mListViewRight.smoothScrollBy(speed, 0);
-        } else if (view.getId() == mListViewRight.getId() && !isRightListEnabled) {
+            child = mListViewRight.getChildAt(0);
+            if (child != null)
+                mListViewRight.setSelectionFromTop(mListViewRight.getFirstVisiblePosition(), child.getTop() + speed);
+//            mListViewRight.smoothScrollBy(speed, 0);
+        } else if (listView.getId() == mListViewRight.getId() && !isRightListEnabled) {
             speed = getSpeed(true, deltaY);
-            mListViewLeft.smoothScrollBy(speed, 0);
+            child = mListViewLeft.getChildAt(0);
+
+            if (child != null)
+                mListViewLeft.setSelectionFromTop(mListViewLeft.getFirstVisiblePosition(), child.getTop() + speed);
+//            mListViewLeft.smoothScrollBy(speed, 0);
         }
     }
 
