@@ -45,7 +45,7 @@ There are a bunch of optional custom attributes:
         listbuddies:scrollFaster="left"/>
 ```
 
-If you prefere to create it dinamically use:
+If you prefere to create it dynamically use:
 
 ```java
     
@@ -70,7 +70,7 @@ If you prefere to create it dinamically use:
 * `autoScrollFaster`: Indicate the ListView that will be faster on the parrallax effect during autoScroll. right/left.
 * `scrollFaster`: Indicate the ListView that will be faster on the parrallax effect during manual scroll. right/left.
 
-This `LinerLayout` contains two ListViews. 
+This `LinearLayout` contains two ListViews. 
 So we need to set the adapters of the ListViews calling `listBuddies.setAdapters(adapter1,adapter2)`. 
 ```java
     @Override
