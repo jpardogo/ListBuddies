@@ -1,6 +1,8 @@
 ListBuddies
 ===========
 
+**This library is not maintained anymore and there will be no further releases**
+
 Android library of a pair of auto-scroll circular parallax ListViews like the ones on the expedia app home page.
 
 A video example of this library is on this [youtube video][1].  
