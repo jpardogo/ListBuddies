@@ -6,13 +6,9 @@ ListBuddies
 Android library of a pair of auto-scroll circular parallax ListViews like the ones on the expedia app home page.
 
 A video example of this library is on this [youtube video][1].  
-And the [demo app][2] can be found on the play store.
 
 <p align="center">
  <img height=393 width=200 src="https://raw.github.com/jpardogo/ListBuddies/master/art/screenshot_listbuddies_2.png"/>
- <a href="https://play.google.com/store/apps/details?id=com.jpardogo.android.listbuddies">
-    <img src="https://raw.github.com/jpardogo/ListBuddies/master/art/google_play%20badge.png"/>
- </a>
 </p>
 
 I would appreciate any kind of help to improve this library. Thanks
